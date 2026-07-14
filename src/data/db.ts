@@ -38,6 +38,7 @@ export interface User {
   email: string;
   passwordHash: string;
   createdAt: string;
+  watchlist?: string[];
 }
 
 const DB_PATH = path.join(process.cwd(), 'src', 'data', 'db.json');
