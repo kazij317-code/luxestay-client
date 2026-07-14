@@ -1,31 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Menu, X, Compass, PlusCircle, Settings, LogOut, User, Sparkles, HelpCircle, PhoneCall } from 'lucide-react';
+import { Menu, X, Compass, PlusCircle, Settings, LogOut, User, Sparkles, PhoneCall, Moon, Sun, ChevronDown, Users, LayoutDashboard } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const isActive = (path: string) => pathname === path;
 
-  // Logged out routes (min 3)
-  // 1. Home (represented by logo / link)
-  // 2. Explore
-  // 3. About
-  // 4. Contact
-  
-  // Logged in routes (min 5)
-  // 1. Home
-  // 2. Explore
-  // 3. Add Stay
-  // 4. Manage Stays
-  // 5. About
-  // 6. Contact
+  // Toggle Dark Mode
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   const loggedInLinks = [
     { name: 'Explore', path: '/explore', icon: Compass },
@@ -44,7 +43,7 @@ export default function Navbar() {
   const currentLinks = user ? loggedInLinks : loggedOutLinks;
 
   return (
-    <nav className="sticky top-0 z-50 w-full glass-panel border-b border-white/5 transition-all duration-300">
+    <nav className="sticky top-0 z-50 w-full bg-white/85 dark:bg-[#0B0F19]/85 backdrop-blur-xl border-b border-gray-200 dark:border-white/5 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
@@ -67,7 +66,7 @@ export default function Navbar() {
                   className={`flex items-center space-x-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive(link.path)
                       ? 'bg-gold/15 text-gold border border-gold/20'
-                      : 'text-gray-300 hover:text-white hover:bg-white/5 border border-transparent'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -77,29 +76,88 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Desktop User profile/CTA */}
+          {/* Desktop User profile & Theme Toggle */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            >
+              {isDarkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </button>
+
             {user ? (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 bg-white/5 py-1.5 px-3.5 rounded-full border border-white/5">
-                  <div className="w-7 h-7 rounded-full bg-gold/20 flex items-center justify-center border border-gold/30">
-                    <User className="w-4 h-4 text-gold" />
-                  </div>
-                  <span className="text-sm font-medium text-gray-200">{user.name}</span>
-                </div>
+              <div className="relative">
+                {/* User Trigger */}
                 <button
-                  onClick={logout}
-                  className="flex items-center space-x-1 px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all duration-200 cursor-pointer"
+                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  className="flex items-center space-x-2 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-all cursor-pointer"
                 >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
+                  <img
+                    src={user.image || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&h=80"}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full object-cover border border-gray-300 dark:border-white/10"
+                  />
+                  <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">{user.name}</span>
+                  <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                 </button>
+
+                {/* Dropdown Card */}
+                {showUserDropdown && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowUserDropdown(false)}
+                    />
+                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-3xl shadow-2xl z-20 py-3 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                      {/* Header */}
+                      <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-800/50">
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">Welcome back!</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                      </div>
+
+                      {/* Options */}
+                      <div className="mt-2 space-y-0.5 px-2">
+                        <Link
+                          href="/items/manage"
+                          onClick={() => setShowUserDropdown(false)}
+                          className="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                          <span>Dashboard</span>
+                        </Link>
+
+                        <button
+                          onClick={() => {
+                            setShowUserDropdown(false);
+                            router.push('/login');
+                          }}
+                          className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+                        >
+                          <Users className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                          <span>Switch User</span>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setShowUserDropdown(false);
+                            logout();
+                          }}
+                          className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-left cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4 text-red-500" />
+                          <span>Logout</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <div className="flex items-center space-x-3">
                 <Link
                   href="/login"
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
                   Sign In
                 </Link>
@@ -114,7 +172,14 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            >
+              {isDarkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </button>
+
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 hover:border-white/10 focus:outline-none transition-all duration-200"
@@ -138,7 +203,7 @@ export default function Navbar() {
                 className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                   isActive(link.path)
                     ? 'bg-gold/15 text-gold border border-gold/10'
-                    : 'text-gray-300 hover:text-white hover:bg-white/5'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/5'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -151,23 +216,45 @@ export default function Navbar() {
             {user ? (
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-9 h-9 rounded-full bg-gold/20 flex items-center justify-center border border-gold/30">
-                    <User className="w-5 h-5 text-gold" />
-                  </div>
+                  <img
+                    src={user.image || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&h=80"}
+                    alt={user.name}
+                    className="w-10 h-10 rounded-full object-cover border border-white/10"
+                  />
                   <div>
-                    <div className="text-sm font-semibold text-white">{user.name}</div>
-                    <div className="text-xs text-gray-400">{user.email}</div>
+                    <div className="text-sm font-semibold text-gray-900 dark:text-white">{user.name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{user.email}</div>
                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <Link
+                    href="/items/manage"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/5"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      router.push('/login');
+                    }}
+                    className="flex items-center justify-center space-x-2 px-3 py-2 rounded-xl text-sm font-medium bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/5 cursor-pointer"
+                  >
+                    <Users className="w-4 h-4" />
+                    <span>Switch</span>
+                  </button>
                 </div>
                 <button
                   onClick={() => {
                     setIsOpen(false);
                     logout();
                   }}
-                  className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-base font-medium text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-all duration-200 cursor-pointer"
+                  className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl text-base font-semibold text-red-500 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 hover:bg-red-100 dark:hover:bg-red-500/20 transition-all duration-200 cursor-pointer"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span>Sign Out</span>
+                  <span>Logout</span>
                 </button>
               </div>
             ) : (
@@ -175,7 +262,7 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-center px-4 py-2.5 rounded-xl text-base font-medium text-center text-gray-300 bg-white/5 border border-white/5"
+                  className="flex items-center justify-center px-4 py-2.5 rounded-xl text-base font-medium text-center text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5"
                 >
                   Sign In
                 </Link>

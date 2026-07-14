@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Lock, Mail, AlertTriangle, KeyRound, Sparkles } from 'lucide-react';
+import { Lock, Mail, AlertTriangle, KeyRound } from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -34,13 +35,40 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoLogin = (demoType: 'alex' | 'elena') => {
+  const handleGoogleSignIn = async () => {
+    try {
+      await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/items/manage',
+      });
+    } catch (err: any) {
+      setError(err.message || 'Failed to authenticate with Google');
+    }
+  };
+
+  const handleDemoLogin = async (demoType: 'alex' | 'elena' | 'admin') => {
+    setError('');
+    setLoading(true);
+    let demoEmail = '';
+    let demoPass = 'demo1234';
+
     if (demoType === 'alex') {
-      setEmail('alex@luxestay.com');
-      setPassword('demo1234');
+      demoEmail = 'alex@luxestay.com';
+    } else if (demoType === 'elena') {
+      demoEmail = 'elena@luxestay.com';
     } else {
-      setEmail('elena@luxestay.com');
-      setPassword('demo1234');
+      demoEmail = 'admin@luxestay.com'; // In case there's a default admin
+    }
+
+    try {
+      const res = await login(demoEmail, demoPass);
+      if (!res.success) {
+        setError(res.error || 'Invalid demo credentials');
+      }
+    } catch (err) {
+      setError('Error with demo login.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,14 +77,11 @@ export default function LoginPage() {
       <Navbar />
 
       <main className="flex-grow flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md glass-panel p-8 rounded-3xl space-y-6 shadow-2xl relative overflow-hidden">
+        <div className="w-full max-w-md bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 p-8 rounded-3xl space-y-6 shadow-2xl relative overflow-hidden">
           
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-gold/10 border border-gold/25 flex items-center justify-center mx-auto">
-              <KeyRound className="w-6 h-6 text-gold" />
-            </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">Welcome Back</h1>
-            <p className="text-sm text-gray-400">Access your private account panel</p>
+            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Welcome Back</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Login to your account</p>
           </div>
 
           {error && (
@@ -69,32 +94,37 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Field */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email Address</label>
+              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                 <input 
                   type="email" 
                   required
-                  placeholder="name@example.com"
+                  placeholder="Enter email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full glass-input pl-10 pr-4 py-3 rounded-xl text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Password</label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Password</label>
+                <Link href="#" className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline">
+                  Forgot Password?
+                </Link>
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                 <input 
                   type="password" 
                   required
-                  placeholder="••••••••"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full glass-input pl-10 pr-4 py-3 rounded-xl text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -102,38 +132,71 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gold hover:bg-gold-hover hover:scale-102 active:scale-98 text-slate-dark font-bold text-sm py-3.5 rounded-xl transition-all shadow-lg shadow-gold/10 mt-2 cursor-pointer"
+              className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold text-sm py-3.5 rounded-xl transition-all shadow-lg hover:shadow-cyan-500/20 active:scale-[0.99] mt-4 cursor-pointer"
             >
               {loading ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
 
-          {/* Demo Login Buttons */}
-          <div className="space-y-3 pt-4 border-t border-white/5">
-            <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider text-center">
-              Quick Demo Auto-Fill
+          {/* Social Sign-In */}
+          <div className="relative flex py-2 items-center">
+            <div className="flex-grow border-t border-gray-200 dark:border-gray-800"></div>
+            <span className="flex-shrink mx-4 text-gray-400 text-xs uppercase font-bold">Or continue with</span>
+            <div className="flex-grow border-t border-gray-200 dark:border-gray-800"></div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            className="w-full bg-gray-50 dark:bg-[#0b0f17] hover:bg-gray-100 dark:hover:bg-slate-900 border border-gray-300 dark:border-gray-800 text-gray-900 dark:text-white font-bold text-sm py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="currentColor"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              />
+            </svg>
+            <span>Google</span>
+          </button>
+
+          {/* Quick Demo Fill */}
+          <div className="space-y-2 pt-4 border-t border-gray-100 dark:border-gray-800 text-center">
+            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+              Demo Auto-Fill
             </span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex gap-2 justify-center">
               <button
                 type="button"
                 onClick={() => handleDemoLogin('alex')}
-                className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-gold/10 hover:text-gold text-xs font-semibold text-gray-300 border border-white/5 hover:border-gold/20 transition-all cursor-pointer"
+                className="py-1.5 px-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-all cursor-pointer"
               >
-                Host Alexander
+                Host Alex
               </button>
               <button
                 type="button"
                 onClick={() => handleDemoLogin('elena')}
-                className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-gold/10 hover:text-gold text-xs font-semibold text-gray-300 border border-white/5 hover:border-gold/20 transition-all cursor-pointer"
+                className="py-1.5 px-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-all cursor-pointer"
               >
                 Host Elena
               </button>
             </div>
           </div>
 
-          <div className="text-center text-sm text-gray-400 pt-2">
+          <div className="text-center text-sm text-gray-500 dark:text-gray-400 pt-2">
             Don't have an account?{' '}
-            <Link href="/register" className="text-gold hover:text-gold-hover font-semibold underline underline-offset-4">
+            <Link href="/register" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">
               Register Here
             </Link>
           </div>

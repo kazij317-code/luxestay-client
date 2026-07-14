@@ -2,18 +2,21 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { authClient } from '@/lib/auth-client';
 
 export interface User {
   id: string;
   name: string;
   email: string;
+  role?: string;
+  image?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string, image?: string, role?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
 
@@ -25,15 +28,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Listen to session changes or fetch session on mount
   useEffect(() => {
-    // Check if user is logged in from localStorage
-    const checkAuth = async () => {
+    const fetchSession = async () => {
       try {
-        const storedUser = localStorage.getItem('luxestay_user');
-        const token = localStorage.getItem('luxestay_token');
-        
-        if (storedUser && token) {
-          setUser(JSON.parse(storedUser));
+        const { data: session } = await authClient.getSession();
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+            role: (session.user as any).role || 'user',
+            image: session.user.image || undefined,
+          });
+        } else {
+          setUser(null);
         }
       } catch (err) {
         console.error("Failed to load auth session", err);
@@ -41,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
       }
     };
-    checkAuth();
+    fetchSession();
   }, []);
 
   // Protect pages
@@ -56,53 +65,96 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
       });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        setUser(data.user);
-        localStorage.setItem('luxestay_user', JSON.stringify(data.user));
-        localStorage.setItem('luxestay_token', data.token);
+
+      if (error) {
+        return { success: false, error: error.message || 'Invalid credentials' };
+      }
+
+      if (data?.user) {
+        setUser({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: (data.user as any).role || 'user',
+          image: data.user.image || undefined,
+        });
+        
+        // Better Auth sets session cookie, but let's store a token in localStorage if the Express backend needs it.
+        // The token plugin in Better Auth stores JWT, we can fetch it via authClient.token() or it's standard in cookies.
+        // Wait, since Express backend reads Bearer token from headers, let's fetch the JWT token:
+        const sessionRes = await authClient.getSession();
+        const token = sessionRes.data?.session?.token || '';
+        localStorage.setItem('luxestay_token', token);
+        localStorage.setItem('luxestay_user', JSON.stringify({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: (data.user as any).role || 'user',
+          image: data.user.image || undefined,
+        }));
+
         router.push('/items/manage');
         return { success: true };
-      } else {
-        return { success: false, error: data.error || 'Invalid credentials' };
       }
-    } catch (err) {
-      return { success: false, error: 'Network error, please try again.' };
+      return { success: false, error: 'Sign in failed' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error, please try again.' };
     }
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name: string, email: string, password: string, image?: string, role?: string) => {
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+      const { data, error } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+        image,
+        role: role || 'user',
       });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        setUser(data.user);
-        localStorage.setItem('luxestay_user', JSON.stringify(data.user));
-        localStorage.setItem('luxestay_token', data.token);
+
+      if (error) {
+        return { success: false, error: error.message || 'Registration failed' };
+      }
+
+      if (data?.user) {
+        setUser({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: (data.user as any).role || 'user',
+          image: data.user.image || undefined,
+        });
+
+        const sessionRes = await authClient.getSession();
+        const token = sessionRes.data?.session?.token || '';
+        localStorage.setItem('luxestay_token', token);
+        localStorage.setItem('luxestay_user', JSON.stringify({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: (data.user as any).role || 'user',
+          image: data.user.image || undefined,
+        }));
+
         router.push('/items/manage');
         return { success: true };
-      } else {
-        return { success: false, error: data.error || 'Registration failed' };
       }
-    } catch (err) {
-      return { success: false, error: 'Network error, please try again.' };
+      return { success: false, error: 'Registration failed' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error, please try again.' };
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await authClient.signOut();
+    } catch (err) {
+      console.error("Signout error", err);
+    }
     setUser(null);
     localStorage.removeItem('luxestay_user');
     localStorage.removeItem('luxestay_token');
