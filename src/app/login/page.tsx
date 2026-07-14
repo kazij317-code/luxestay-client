@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Lock, Mail, AlertTriangle, KeyRound } from 'lucide-react';
+import { Lock, Mail, AlertTriangle, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 
 export default function LoginPage() {
@@ -15,6 +15,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -111,21 +112,27 @@ export default function LoginPage() {
             {/* Password Field */}
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Password</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                 <Link href="#" className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline">
                   Forgot Password?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                 <input 
-                  type="password" 
+                  type={showPassword ? 'text' : 'password'} 
                   required
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
             </div>
 

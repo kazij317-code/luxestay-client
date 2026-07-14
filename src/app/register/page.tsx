@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Lock, Mail, User, AlertTriangle, KeyRound, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Lock, Mail, User, AlertTriangle, KeyRound, Image as ImageIcon, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 
 export default function RegisterPage() {
@@ -19,6 +19,8 @@ export default function RegisterPage() {
   const [role, setRole] = useState('user');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -186,33 +188,45 @@ export default function RegisterPage() {
 
             {/* Password Field */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Password</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                 <input 
-                  type="password" 
+                  type={showPassword ? 'text' : 'password'} 
                   required
                   placeholder="Min 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
             </div>
 
             {/* Confirm Password Field */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Confirm Password</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                 <input 
-                  type="password" 
+                  type={showConfirmPassword ? 'text' : 'password'} 
                   required
                   placeholder="Confirm password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
             </div>
 
