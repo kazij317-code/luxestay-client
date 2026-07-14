@@ -41,16 +41,20 @@ export default function StayDetailsPage() {
   const [shareStatus, setShareStatus] = useState('');
 
   useEffect(() => {
-    if (user?.name) {
-      setReviewAuthor(user.name);
-      setInquiryName(user.name);
-      setInquiryEmail(user.email || '');
+    if (user) {
+      if (user.name) {
+        setReviewAuthor(user.name);
+        setInquiryName(user.name);
+      }
+      if (user.email) {
+        setInquiryEmail(user.email);
+      }
     }
   }, [user]);
 
   // Inquiry Form States
-  const [inquiryName, setInquiryName] = useState('');
-  const [inquiryEmail, setInquiryEmail] = useState('');
+  const [inquiryName, setInquiryName] = useState(user?.name || '');
+  const [inquiryEmail, setInquiryEmail] = useState(user?.email || '');
   const [inquirySubject, setInquirySubject] = useState('');
   const [inquiryMessage, setInquiryMessage] = useState('');
   const [submittingInquiry, setSubmittingInquiry] = useState(false);
