@@ -19,7 +19,40 @@ export default function AddStayPage() {
   const [location, setLocation] = useState('');
   const [category, setCategory] = useState('Cabins');
   const [image, setImage] = useState('');
-  
+  const [galleryImg1, setGalleryImg1] = useState('');
+  const [galleryImg2, setGalleryImg2] = useState('');
+  const [galleryImg3, setGalleryImg3] = useState('');
+  const [uploadingMain, setUploadingMain] = useState(false);
+  const [uploadingG1, setUploadingG1] = useState(false);
+  const [uploadingG2, setUploadingG2] = useState(false);
+  const [uploadingG3, setUploadingG3] = useState(false);
+
+  const handleImgBBInputUpload = async (file: File, setter: (val: string) => void, setLoading: (val: boolean) => void) => {
+    setLoading(true);
+    setError('');
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API || 'a200bdd6c842d731956d138bf894b798';
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setter(data.data.url);
+      } else {
+        setError('Failed to upload image to ImageBB.');
+      }
+    } catch (err) {
+      setError('Error uploading image.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Specs & Amenities States
   const [beds, setBeds] = useState(1);
   const [guests, setGuests] = useState(2);
@@ -66,6 +99,7 @@ export default function AddStayPage() {
           location,
           category,
           image,
+          images: [image, galleryImg1, galleryImg2, galleryImg3].filter(Boolean),
           beds: Number(beds),
           guests: Number(guests),
           bathrooms: Number(bathrooms),
@@ -84,13 +118,16 @@ export default function AddStayPage() {
         setPrice(250);
         setLocation('');
         setImage('');
+        setGalleryImg1('');
+        setGalleryImg2('');
+        setGalleryImg3('');
         setBeds(1);
         setGuests(2);
         setBathrooms(1);
         setWifi(true);
         setPool(false);
         setKitchen(true);
-        
+
         setTimeout(() => {
           router.push('/items/manage');
         }, 1500);
@@ -121,10 +158,10 @@ export default function AddStayPage() {
       <Navbar />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full space-y-6">
-        
+
         {/* Back Button */}
         <div>
-          <button 
+          <button
             onClick={() => router.push('/items/manage')}
             className="flex items-center space-x-2 text-sm text-gray-400 hover:text-gold transition-colors font-medium cursor-pointer"
           >
@@ -135,7 +172,7 @@ export default function AddStayPage() {
 
         {/* Form Container */}
         <div className="glass-panel p-8 rounded-3xl space-y-6 shadow-2xl">
-          
+
           <div className="flex items-center space-x-3 pb-4 border-b border-white/5">
             <PlusCircle className="w-6 h-6 text-gold" />
             <div>
@@ -159,12 +196,12 @@ export default function AddStayPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             {/* Core Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase">Property Title *</label>
-                <input 
+                <input
                   type="text"
                   required
                   placeholder="e.g. Sapphire Overwater Villa"
@@ -176,7 +213,7 @@ export default function AddStayPage() {
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase">Location *</label>
-                <input 
+                <input
                   type="text"
                   required
                   placeholder="e.g. Amalfi Coast, Italy"
@@ -205,7 +242,7 @@ export default function AddStayPage() {
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase">Price per Night ($) *</label>
-                <input 
+                <input
                   type="number"
                   required
                   min="1"
@@ -214,16 +251,121 @@ export default function AddStayPage() {
                   className="w-full glass-input px-4 py-3 rounded-xl text-sm"
                 />
               </div>
+            </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-semibold text-gray-400 uppercase">Main Image URL (Optional)</label>
-                <input 
-                  type="url"
-                  placeholder="https://unsplash.com/..."
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  className="w-full glass-input px-4 py-3 rounded-xl text-sm"
-                />
+            {/* Image Fields Section */}
+            <div className="space-y-4 border-t border-white/5 pt-4">
+              <h3 className="text-xs font-bold text-gold uppercase tracking-wider">Property Images</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Main Image */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase">Main Image URL / Upload *</label>
+                  <div className="relative flex gap-2">
+                    <input 
+                      type="url"
+                      required
+                      placeholder="Enter image URL or upload"
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
+                      className="w-full glass-input px-4 py-3 rounded-xl text-sm"
+                    />
+                    <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
+                      <span>{uploadingMain ? '...' : 'Upload'}</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleImgBBInputUpload(file, setImage, setUploadingMain);
+                        }}
+                        className="hidden"
+                        disabled={uploadingMain}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Gallery Image 1 */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 1 (Optional)</label>
+                  <div className="relative flex gap-2">
+                    <input 
+                      type="url"
+                      placeholder="Enter image URL or upload"
+                      value={galleryImg1}
+                      onChange={(e) => setGalleryImg1(e.target.value)}
+                      className="w-full glass-input px-4 py-3 rounded-xl text-sm"
+                    />
+                    <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
+                      <span>{uploadingG1 ? '...' : 'Upload'}</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleImgBBInputUpload(file, setGalleryImg1, setUploadingG1);
+                        }}
+                        className="hidden"
+                        disabled={uploadingG1}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Gallery Image 2 */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 2 (Optional)</label>
+                  <div className="relative flex gap-2">
+                    <input 
+                      type="url"
+                      placeholder="Enter image URL or upload"
+                      value={galleryImg2}
+                      onChange={(e) => setGalleryImg2(e.target.value)}
+                      className="w-full glass-input px-4 py-3 rounded-xl text-sm"
+                    />
+                    <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
+                      <span>{uploadingG2 ? '...' : 'Upload'}</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleImgBBInputUpload(file, setGalleryImg2, setUploadingG2);
+                        }}
+                        className="hidden"
+                        disabled={uploadingG2}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Gallery Image 3 */}
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 3 (Optional)</label>
+                  <div className="relative flex gap-2">
+                    <input 
+                      type="url"
+                      placeholder="Enter image URL or upload"
+                      value={galleryImg3}
+                      onChange={(e) => setGalleryImg3(e.target.value)}
+                      className="w-full glass-input px-4 py-3 rounded-xl text-sm"
+                    />
+                    <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
+                      <span>{uploadingG3 ? '...' : 'Upload'}</span>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleImgBBInputUpload(file, setGalleryImg3, setUploadingG3);
+                        }}
+                        className="hidden"
+                        disabled={uploadingG3}
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -231,7 +373,7 @@ export default function AddStayPage() {
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase">Short Description *</label>
-                <input 
+                <input
                   type="text"
                   required
                   maxLength={120}
@@ -244,7 +386,7 @@ export default function AddStayPage() {
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase">Full Description / Overview *</label>
-                <textarea 
+                <textarea
                   rows={4}
                   required
                   placeholder="Write a thorough overview detailing architectural style, private features, proximity, and check-in specifications."
@@ -258,11 +400,11 @@ export default function AddStayPage() {
             {/* Specifications Details */}
             <div className="glass-panel bg-slate-900/40 p-5 rounded-2xl border border-white/5 space-y-4">
               <h3 className="text-xs font-bold text-gold uppercase tracking-wider">Property Specifications & Amenities</h3>
-              
+
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-semibold text-gray-400 uppercase">Beds Count</label>
-                  <input 
+                  <input
                     type="number"
                     min="1"
                     value={beds}
@@ -272,7 +414,7 @@ export default function AddStayPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-semibold text-gray-400 uppercase">Max Guests</label>
-                  <input 
+                  <input
                     type="number"
                     min="1"
                     value={guests}
@@ -282,7 +424,7 @@ export default function AddStayPage() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-semibold text-gray-400 uppercase">Bathrooms</label>
-                  <input 
+                  <input
                     type="number"
                     min="0.5"
                     step="0.5"
@@ -295,7 +437,7 @@ export default function AddStayPage() {
 
               <div className="grid grid-cols-3 gap-4 pt-2">
                 <label className="flex items-center space-x-2.5 text-xs text-gray-300 cursor-pointer">
-                  <input 
+                  <input
                     type="checkbox"
                     checked={wifi}
                     onChange={(e) => setWifi(e.target.checked)}
@@ -303,9 +445,9 @@ export default function AddStayPage() {
                   />
                   <span>Free Wi-Fi</span>
                 </label>
-                
+
                 <label className="flex items-center space-x-2.5 text-xs text-gray-300 cursor-pointer">
-                  <input 
+                  <input
                     type="checkbox"
                     checked={pool}
                     onChange={(e) => setPool(e.target.checked)}
@@ -315,7 +457,7 @@ export default function AddStayPage() {
                 </label>
 
                 <label className="flex items-center space-x-2.5 text-xs text-gray-300 cursor-pointer">
-                  <input 
+                  <input
                     type="checkbox"
                     checked={kitchen}
                     onChange={(e) => setKitchen(e.target.checked)}
