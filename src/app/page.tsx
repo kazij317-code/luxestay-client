@@ -147,20 +147,20 @@ export default function HomePage() {
             </span>
           </h1>
           
-          <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto font-medium">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
             Explore architecturally unique cabins, beachfront villas, and luxury penthouses with 24/7 dedicated concierge service.
           </p>
 
           {/* Interactive Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-3xl mx-auto mt-8 bg-slate-900/80 backdrop-blur-xl border border-white/10 p-2 rounded-2xl sm:rounded-full shadow-2xl flex flex-col sm:flex-row gap-2">
-            <div className="flex-1 flex items-center px-4 py-2 border-b sm:border-b-0 sm:border-r border-white/5">
+          <form onSubmit={handleSearch} className="max-w-3xl mx-auto mt-8 bg-white/95 dark:bg-slate-900/80 backdrop-blur-xl border border-gray-200 dark:border-white/10 p-2 rounded-2xl sm:rounded-full shadow-2xl flex flex-col sm:flex-row gap-2">
+            <div className="flex-1 flex items-center px-4 py-2 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-white/5">
               <MapPin className="w-5 h-5 text-gold mr-3 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Where would you like to escape?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-none text-white text-sm w-full focus:outline-none placeholder-gray-400"
+                className="bg-transparent border-none text-gray-900 dark:text-white text-sm w-full focus:outline-none placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             
@@ -169,14 +169,14 @@ export default function HomePage() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-transparent border-none text-white text-sm w-full focus:outline-none cursor-pointer"
+                className="bg-transparent border-none text-gray-900 dark:text-white text-sm w-full focus:outline-none cursor-pointer"
               >
-                <option value="All" className="bg-slate-900 text-white">All Categories</option>
-                <option value="Cabins" className="bg-slate-900 text-white">Cabins</option>
-                <option value="Beachfront" className="bg-slate-900 text-white">Beachfront</option>
-                <option value="Penthouses" className="bg-slate-900 text-white">Penthouses</option>
-                <option value="Villas" className="bg-slate-900 text-white">Villas</option>
-                <option value="Treehouses" className="bg-slate-900 text-white">Treehouses</option>
+                <option value="All" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">All Categories</option>
+                <option value="Cabins" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Cabins</option>
+                <option value="Beachfront" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Beachfront</option>
+                <option value="Penthouses" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Penthouses</option>
+                <option value="Villas" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Villas</option>
+                <option value="Treehouses" className="bg-white dark:bg-slate-900 text-gray-900 dark:text-white">Treehouses</option>
               </select>
             </div>
 
@@ -201,7 +201,7 @@ export default function HomePage() {
                 setSelectedCategory(cat);
                 router.push(`/explore?category=${cat}`);
               }}
-              className="px-5 py-3 rounded-2xl glass-card text-sm font-semibold text-gray-300 hover:text-white border border-white/5 hover:border-gold/30 hover:bg-gold/5 flex items-center space-x-2 transition-all cursor-pointer"
+              className="px-5 py-3 rounded-2xl glass-card text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border border-gray-200 dark:border-white/5 hover:border-gold/30 hover:bg-gold/5 flex items-center space-x-2 transition-all cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-gold" />
               <span>{cat === 'All' ? 'Explore All' : cat}</span>

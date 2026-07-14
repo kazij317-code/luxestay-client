@@ -11,7 +11,7 @@ import {
   Trash2, Eye, PlusCircle, Compass, Settings, 
   MapPin, DollarSign, Star, AlertCircle, RefreshCw,
   LayoutDashboard, Heart, Calendar, User as UserIcon, LogOut,
-  Image as ImageIcon, Sparkles, Check, CheckCircle, Shield, Users, CreditCard, X
+  Image as ImageIcon, Sparkles, Check, CheckCircle, Shield, Users, CreditCard, X, Mail
 } from 'lucide-react';
 
 interface UserItem {
@@ -52,6 +52,7 @@ export default function ManageStaysPage() {
   const [watchlist, setWatchlist] = useState<Stay[]>([]); // User's watchlist
   const [reservations, setReservations] = useState<ReservationItem[]>([]); // User's or admin's reservations
   const [usersList, setUsersList] = useState<UserItem[]>([]); // Admin: all users in system
+  const [inquiriesList, setInquiriesList] = useState<any[]>([]); // Admin: all inquiries in system
   
   const [fetching, setFetching] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
@@ -121,6 +122,15 @@ export default function ManageStaysPage() {
         const reservationsData = await reservationsRes.json();
         if (reservationsData.success) {
           setReservations(reservationsData.data);
+        }
+
+        // Fetch all inquiries
+        const inquiriesRes = await fetch('/api/admin/inquiries', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const inquiriesData = await inquiriesRes.json();
+        if (inquiriesData.success) {
+          setInquiriesList(inquiriesData.data);
         }
       } else {
         // Regular User Data Load
@@ -372,6 +382,7 @@ export default function ManageStaysPage() {
         { id: 'manage-users', name: 'Manage Users', icon: Users },
         { id: 'manage-stays', name: 'Manage Stays', icon: Compass },
         { id: 'transactions', name: 'Transactions', icon: CreditCard },
+        { id: 'inquiries', name: 'Inquiries', icon: Mail },
         { id: 'profile', name: 'Profile', icon: UserIcon },
       ]
     : [
@@ -513,6 +524,20 @@ export default function ManageStaysPage() {
                           </div>
                           <div className="p-3 bg-white/5 rounded-2xl">
                             <CreditCard className="w-6 h-6 text-amber-400" />
+                          </div>
+                        </div>
+
+                        <div className="glass-panel p-6 rounded-3xl relative overflow-hidden flex items-center justify-between">
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Inquiries</p>
+                            <h2 className="text-4xl font-black text-white">{inquiriesList.length}</h2>
+                            <button onClick={() => setActiveTab('inquiries')} className="text-xs text-cyan-400 hover:underline flex items-center gap-1 mt-2">
+                              <span>View details</span>
+                              <span>→</span>
+                            </button>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-2xl">
+                            <Mail className="w-6 h-6 text-emerald-400" />
                           </div>
                         </div>
                       </>
@@ -1301,6 +1326,70 @@ export default function ManageStaysPage() {
                               </td>
                             </tr>
                           ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ADMIN: INQUIRIES */}
+              {activeTab === 'inquiries' && isAdmin && (
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-2">
+                      <Mail className="w-8 h-8 text-cyan-400" />
+                      <span>Private Inquiries ✉️</span>
+                    </h1>
+                    <p className="text-sm text-gray-400 mt-1">Review guest inquiries and custom requests</p>
+                  </div>
+
+                  <div className="glass-panel rounded-3xl overflow-hidden border border-white/5 shadow-xl">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-white/10 bg-slate-900/60 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                            <th className="py-4 px-6">Sender Info</th>
+                            <th className="py-4 px-6">Stay Reference</th>
+                            <th className="py-4 px-6">Subject</th>
+                            <th className="py-4 px-6">Inquiry Details</th>
+                            <th className="py-4 px-6">Date Received</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5 text-sm">
+                          {inquiriesList.length === 0 ? (
+                            <tr>
+                              <td colSpan={5} className="py-8 text-center text-gray-500">
+                                No inquiries found in the system.
+                              </td>
+                            </tr>
+                          ) : (
+                            inquiriesList.map((inq) => (
+                              <tr key={inq.id} className="hover:bg-white/[0.02] transition-colors">
+                                <td className="py-4 px-6 text-white font-semibold">
+                                  <div>{inq.name}</div>
+                                  <div className="text-[10px] text-gray-400">{inq.email}</div>
+                                </td>
+                                <td className="py-4 px-6 text-gray-300 font-bold">
+                                  {inq.propertyTitle}
+                                </td>
+                                <td className="py-4 px-6 text-cyan-400 font-semibold">
+                                  {inq.subject}
+                                </td>
+                                <td className="py-4 px-6 text-gray-400 max-w-xs whitespace-normal break-words">
+                                  {inq.message}
+                                </td>
+                                <td className="py-4 px-6 text-gray-500 text-xs">
+                                  {new Date(inq.createdAt).toLocaleDateString(undefined, {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </td>
+                              </tr>
+                            ))
+                          )}
                         </tbody>
                       </table>
                     </div>

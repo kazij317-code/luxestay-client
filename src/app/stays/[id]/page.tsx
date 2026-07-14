@@ -43,8 +43,18 @@ export default function StayDetailsPage() {
   useEffect(() => {
     if (user?.name) {
       setReviewAuthor(user.name);
+      setInquiryName(user.name);
+      setInquiryEmail(user.email || '');
     }
   }, [user]);
+
+  // Inquiry Form States
+  const [inquiryName, setInquiryName] = useState('');
+  const [inquiryEmail, setInquiryEmail] = useState('');
+  const [inquirySubject, setInquirySubject] = useState('');
+  const [inquiryMessage, setInquiryMessage] = useState('');
+  const [submittingInquiry, setSubmittingInquiry] = useState(false);
+  const [inquirySuccess, setInquirySuccess] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -155,6 +165,37 @@ export default function StayDetailsPage() {
       console.error("Failed to post review", err);
     } finally {
       setSubmittingReview(false);
+    }
+  };
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inquiryName.trim() || !inquiryEmail.trim() || !inquirySubject.trim() || !inquiryMessage.trim()) return;
+
+    setSubmittingInquiry(true);
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          stayId: id,
+          name: inquiryName,
+          email: inquiryEmail,
+          subject: inquirySubject,
+          message: inquiryMessage
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setInquirySuccess(true);
+        setInquirySubject('');
+        setInquiryMessage('');
+        setTimeout(() => setInquirySuccess(false), 4000);
+      }
+    } catch (err) {
+      console.error("Failed to post inquiry", err);
+    } finally {
+      setSubmittingInquiry(false);
     }
   };
 
@@ -556,6 +597,78 @@ export default function StayDetailsPage() {
                 <div className="text-sm font-bold text-white">{stay.hostName || 'Alexander Vane'}</div>
                 <div className="text-[10px] text-emerald-400 font-medium">Verified Luxe Host</div>
               </div>
+            </div>
+
+            {/* Send Private Inquiry Form */}
+            <div className="glass-panel p-6 rounded-2xl space-y-4 border border-white/5">
+              <h3 className="text-base font-bold text-white tracking-tight">Send Private Inquiry</h3>
+              
+              {inquirySuccess ? (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl text-center space-y-2">
+                  <CheckCircle className="w-8 h-8 text-emerald-400 mx-auto animate-bounce" />
+                  <h4 className="text-xs font-bold text-emerald-400">Inquiry Sent Successfully!</h4>
+                  <p className="text-[10px] text-gray-400">Our curation team will get back to you shortly.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleInquirySubmit} className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-semibold text-gray-400 uppercase block">YOUR NAME</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="e.g. John Doe"
+                      value={inquiryName}
+                      onChange={(e) => setInquiryName(e.target.value)}
+                      className="w-full glass-input px-3 py-2 rounded-lg text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-semibold text-gray-400 uppercase block">EMAIL ADDRESS</label>
+                    <input 
+                      type="email" 
+                      required
+                      placeholder="name@example.com"
+                      value={inquiryEmail}
+                      onChange={(e) => setInquiryEmail(e.target.value)}
+                      className="w-full glass-input px-3 py-2 rounded-lg text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-semibold text-gray-400 uppercase block">SUBJECT</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder={`e.g. Private chef booking for ${stay.title}`}
+                      value={inquirySubject}
+                      onChange={(e) => setInquirySubject(e.target.value)}
+                      className="w-full glass-input px-3 py-2 rounded-lg text-xs"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-semibold text-gray-400 uppercase block">MESSAGE INQUIRY</label>
+                    <textarea 
+                      rows={3}
+                      required
+                      placeholder="Describe your inquiry details..."
+                      value={inquiryMessage}
+                      onChange={(e) => setInquiryMessage(e.target.value)}
+                      className="w-full glass-input px-3 py-2 rounded-lg text-xs"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submittingInquiry}
+                    className="w-full bg-gold hover:bg-gold-hover text-slate-dark font-bold text-xs py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-1.5 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{submittingInquiry ? 'Sending...' : 'Send Inquiry'}</span>
+                  </button>
+                </form>
+              )}
             </div>
 
           </div>
