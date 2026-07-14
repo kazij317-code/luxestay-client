@@ -18,6 +18,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, password: string, image?: string, role?: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  updateProfile: (name: string, image?: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -164,8 +165,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/');
   };
 
+  const updateProfile = async (name: string, image?: string) => {
+    try {
+      const token = localStorage.getItem('luxestay_token');
+      const response = await fetch('/api/user/update', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, image })
+      });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setUser({
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: data.user.role,
+          image: data.user.image || undefined,
+        });
+        localStorage.setItem('luxestay_user', JSON.stringify(data.user));
+        return { success: true };
+      }
+      return { success: false, error: data.error || 'Failed to update profile' };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

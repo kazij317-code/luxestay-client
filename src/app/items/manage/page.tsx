@@ -11,7 +11,7 @@ import {
   Trash2, Eye, PlusCircle, Compass, Settings, 
   MapPin, DollarSign, Star, AlertCircle, RefreshCw,
   LayoutDashboard, Heart, Calendar, User as UserIcon, LogOut,
-  Image as ImageIcon, Sparkles, Check, CheckCircle, Shield, Users, CreditCard
+  Image as ImageIcon, Sparkles, Check, CheckCircle, Shield, Users, CreditCard, X
 } from 'lucide-react';
 
 interface UserItem {
@@ -41,7 +41,7 @@ interface ReservationItem {
 }
 
 export default function ManageStaysPage() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, updateProfile } = useAuth();
   const router = useRouter();
 
   // Navigation tab
@@ -80,6 +80,12 @@ export default function ManageStaysPage() {
   const [kitchen, setKitchen] = useState(true);
   const [formSuccess, setFormSuccess] = useState(false);
   const [formSubmitting, setFormSubmitting] = useState(false);
+
+  // Update Profile Modal States
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [updateName, setUpdateName] = useState('');
+  const [updateAvatar, setUpdateAvatar] = useState('');
+  const [updatingProfile, setUpdatingProfile] = useState(false);
 
   // Fetch all necessary data depending on role
   async function loadDashboardData() {
@@ -1338,6 +1344,19 @@ export default function ManageStaysPage() {
                         <p className="text-sm font-semibold text-white mt-1">{user.email}</p>
                       </div>
                     </div>
+
+                    <div className="pt-2 border-t border-white/5">
+                      <button
+                        onClick={() => {
+                          setUpdateName(user.name);
+                          setUpdateAvatar(user.image || '');
+                          setShowUpdateModal(true);
+                        }}
+                        className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer"
+                      >
+                        Update Profile
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1347,6 +1366,86 @@ export default function ManageStaysPage() {
         </main>
 
       </div>
+
+      {/* Update User Profile Modal */}
+      {showUpdateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-slate-900/90 border border-white/10 rounded-3xl p-8 max-w-sm w-full space-y-6 relative overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Close X Button */}
+            <button 
+              onClick={() => setShowUpdateModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header Icon */}
+            <div className="flex justify-center">
+              <div className="w-12 h-12 rounded-full bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
+                <UserIcon className="w-5 h-5 text-cyan-400" />
+              </div>
+            </div>
+
+            <h2 className="text-xl font-bold text-center text-white">Update User</h2>
+
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              if (!updateName.trim()) return;
+              setUpdatingProfile(true);
+              const res = await updateProfile(updateName, updateAvatar);
+              setUpdatingProfile(false);
+              if (res.success) {
+                setShowUpdateModal(false);
+              } else {
+                setError(res.error || 'Failed to update profile');
+              }
+            }} className="space-y-4">
+              {/* Name field */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Full Name</label>
+                <input 
+                  type="text"
+                  required
+                  placeholder="Enter your name"
+                  value={updateName}
+                  onChange={(e) => setUpdateName(e.target.value)}
+                  className="w-full glass-input px-4 py-3 rounded-xl text-sm"
+                />
+              </div>
+
+              {/* Avatar URL field */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Avatar Image URL</label>
+                <input 
+                  type="text"
+                  placeholder="https://..."
+                  value={updateAvatar}
+                  onChange={(e) => setUpdateAvatar(e.target.value)}
+                  className="w-full glass-input px-4 py-3 rounded-xl text-sm"
+                />
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowUpdateModal(false)}
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 font-bold py-3.5 rounded-2xl text-sm transition-all cursor-pointer border border-white/5"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={updatingProfile}
+                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3.5 rounded-2xl text-sm transition-all shadow-lg cursor-pointer"
+                >
+                  {updatingProfile ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

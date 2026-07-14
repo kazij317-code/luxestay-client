@@ -92,10 +92,11 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchStays() {
       try {
-        const res = await fetch('/api/stays?limit=4');
+        const res = await fetch('/api/stays');
         const data = await res.json();
         if (data.success) {
-          setFeaturedStays(data.data);
+          const featured = data.data.filter((s: Stay) => s.featured === 'Featured');
+          setFeaturedStays(featured.length > 0 ? featured.slice(0, 4) : data.data.slice(0, 4));
         }
       } catch (err) {
         console.error("Error fetching stays for homepage", err);

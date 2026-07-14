@@ -41,6 +41,12 @@ export default function StayDetailsPage() {
   const [shareStatus, setShareStatus] = useState('');
 
   useEffect(() => {
+    if (user?.name) {
+      setReviewAuthor(user.name);
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (!id) return;
 
     async function loadStayDetails() {
@@ -411,7 +417,7 @@ export default function StayDetailsPage() {
                 <form onSubmit={handleReviewSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-gray-400 uppercase">Your Name</label>
+                      <label className="text-xs font-semibold text-gray-400 uppercase">YOUR NAME</label>
                       <input 
                         type="text" 
                         required

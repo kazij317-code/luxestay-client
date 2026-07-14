@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Menu, X, Compass, PlusCircle, Settings, LogOut, User, Sparkles, PhoneCall, Moon, Sun, ChevronDown, Users, LayoutDashboard } from 'lucide-react';
+import { Menu, X, Compass, PlusCircle, Settings, LogOut, User, Sparkles, PhoneCall, Moon, Sun, ChevronDown, Users, LayoutDashboard, Home } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -27,14 +27,15 @@ export default function Navbar() {
   }, [isDarkMode]);
 
   const loggedInLinks = [
+    { name: 'Home', path: '/', icon: Home },
     { name: 'Explore', path: '/explore', icon: Compass },
-    { name: 'Add Listing', path: '/items/add', icon: PlusCircle },
     { name: 'Dashboard', path: '/items/manage', icon: Settings },
     { name: 'About', path: '/about', icon: Sparkles },
     { name: 'Contact', path: '/contact', icon: PhoneCall },
   ];
 
   const loggedOutLinks = [
+    { name: 'Home', path: '/', icon: Home },
     { name: 'Explore', path: '/explore', icon: Compass },
     { name: 'About', path: '/about', icon: Sparkles },
     { name: 'Contact', path: '/contact', icon: PhoneCall },
