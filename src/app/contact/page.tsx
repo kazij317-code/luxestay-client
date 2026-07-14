@@ -1,25 +1,55 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/context/AuthContext';
 import { Mail, Phone, MapPin, Send, CheckCircle, HelpCircle } from 'lucide-react';
 
 export default function ContactPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const { user } = useAuth();
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      if (user.name) setName(user.name);
+      if (user.email) setEmail(user.email);
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name && email && message) {
-      setSubmitted(true);
-      setName('');
-      setEmail('');
-      setSubject('');
-      setMessage('');
+      setSubmitting(true);
+      try {
+        const res = await fetch('/api/inquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            email,
+            subject: subject || 'General Inquiry',
+            message
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setSubmitted(true);
+          setName(user?.name || '');
+          setEmail(user?.email || '');
+          setSubject('');
+          setMessage('');
+        }
+      } catch (err) {
+        console.error('Failed to submit inquiry', err);
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -146,12 +176,13 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <button
+                 <button
                   type="submit"
-                  className="bg-gold hover:bg-gold-hover text-slate-dark font-bold text-sm px-6 py-3 rounded-xl flex items-center space-x-2 transition-all cursor-pointer"
+                  disabled={submitting}
+                  className="bg-gold hover:bg-gold-hover disabled:opacity-50 text-slate-dark font-bold text-sm px-6 py-3 rounded-xl flex items-center space-x-2 transition-all cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send Inquiry</span>
+                  <span>{submitting ? 'Sending...' : 'Send Inquiry'}</span>
                 </button>
               </form>
             )}
