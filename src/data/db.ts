@@ -30,6 +30,7 @@ export interface Stay {
   hostId: string;
   hostName: string;
   reviews: Review[];
+  featured?: string;
 }
 
 export interface User {

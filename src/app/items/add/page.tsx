@@ -256,13 +256,13 @@ export default function AddStayPage() {
             {/* Image Fields Section */}
             <div className="space-y-4 border-t border-white/5 pt-4">
               <h3 className="text-xs font-bold text-gold uppercase tracking-wider">Property Images</h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Main Image */}
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-gray-400 uppercase">Main Image URL / Upload *</label>
                   <div className="relative flex gap-2">
-                    <input 
+                    <input
                       type="url"
                       required
                       placeholder="Enter image URL or upload"
@@ -272,8 +272,8 @@ export default function AddStayPage() {
                     />
                     <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                       <span>{uploadingMain ? '...' : 'Upload'}</span>
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         accept="image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
@@ -290,7 +290,7 @@ export default function AddStayPage() {
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 1 (Optional)</label>
                   <div className="relative flex gap-2">
-                    <input 
+                    <input
                       type="url"
                       placeholder="Enter image URL or upload"
                       value={galleryImg1}
@@ -299,8 +299,8 @@ export default function AddStayPage() {
                     />
                     <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                       <span>{uploadingG1 ? '...' : 'Upload'}</span>
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         accept="image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
@@ -317,7 +317,7 @@ export default function AddStayPage() {
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 2 (Optional)</label>
                   <div className="relative flex gap-2">
-                    <input 
+                    <input
                       type="url"
                       placeholder="Enter image URL or upload"
                       value={galleryImg2}
@@ -326,8 +326,8 @@ export default function AddStayPage() {
                     />
                     <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                       <span>{uploadingG2 ? '...' : 'Upload'}</span>
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         accept="image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
@@ -344,7 +344,7 @@ export default function AddStayPage() {
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 3 (Optional)</label>
                   <div className="relative flex gap-2">
-                    <input 
+                    <input
                       type="url"
                       placeholder="Enter image URL or upload"
                       value={galleryImg3}
@@ -353,8 +353,8 @@ export default function AddStayPage() {
                     />
                     <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                       <span>{uploadingG3 ? '...' : 'Upload'}</span>
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         accept="image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];

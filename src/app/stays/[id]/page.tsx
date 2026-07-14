@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
 import { Stay } from '@/data/db';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Star, MapPin, Wifi, Bath, Users, Bed, HelpCircle, 
   ArrowLeft, Send, CheckCircle, Home, Heart, Calendar, Share2 
@@ -15,6 +16,7 @@ export default function StayDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  const { user } = useAuth();
 
   const [stay, setStay] = useState<Stay | null>(null);
   const [related, setRelated] = useState<Stay[]>([]);
@@ -125,10 +127,40 @@ export default function StayDetailsPage() {
     }
   };
 
-  const handleBooking = (e: React.FormEvent) => {
+  const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (checkIn && checkOut) {
-      setBooked(true);
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    if (checkIn && checkOut && stay) {
+      try {
+        const token = localStorage.getItem('luxestay_token');
+        const days = Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24));
+        const priceTotal = stay.price * (days <= 0 ? 1 : days);
+        const finalPrice = isNaN(priceTotal) ? stay.price : priceTotal;
+        
+        const res = await fetch('/api/reservations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            stayId: stay.id,
+            checkIn,
+            checkOut,
+            price: finalPrice,
+            guests: guestsCount
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setBooked(true);
+        }
+      } catch (err) {
+        console.error("Booking error:", err);
+      }
     }
   };
 
