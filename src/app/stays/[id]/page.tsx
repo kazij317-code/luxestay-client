@@ -70,22 +70,47 @@ export default function StayDetailsPage() {
 
   useEffect(() => {
     if (!id) return;
-    const watchlist = JSON.parse(localStorage.getItem('luxestay_watchlist') || '[]');
-    setIsInWatchlist(watchlist.includes(id));
+    const checkWatchlistStatus = async () => {
+      try {
+        const token = localStorage.getItem('luxestay_token');
+        if (!token) return;
+        const res = await fetch('/api/user/watchlist', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setIsInWatchlist(data.watchlist.includes(id));
+        }
+      } catch (err) {
+        console.error("Failed to fetch watchlist", err);
+      }
+    };
+    checkWatchlistStatus();
   }, [id]);
 
-  const toggleWatchlist = () => {
+  const toggleWatchlist = async () => {
     if (!id) return;
-    const watchlist = JSON.parse(localStorage.getItem('luxestay_watchlist') || '[]');
-    let updated;
-    if (watchlist.includes(id)) {
-      updated = watchlist.filter((item: string) => item !== id);
-      setIsInWatchlist(false);
-    } else {
-      updated = [...watchlist, id];
-      setIsInWatchlist(true);
+    if (!user) {
+      router.push('/login');
+      return;
     }
-    localStorage.setItem('luxestay_watchlist', JSON.stringify(updated));
+    try {
+      const token = localStorage.getItem('luxestay_token');
+      const res = await fetch('/api/user/watchlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ stayId: id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setIsInWatchlist(data.watchlist.includes(id));
+      }
+    } catch (err) {
+      console.error("Failed to toggle watchlist", err);
+    }
   };
 
   const handleShare = () => {
@@ -274,7 +299,7 @@ export default function StayDetailsPage() {
               >
                 <Heart className={`w-4.5 h-4.5 transition-colors ${isInWatchlist ? 'fill-rose-500 text-rose-500' : 'text-gray-400'}`} />
                 <span className="font-semibold text-sm">
-                  {isInWatchlist ? 'Watchlisted' : 'Add to Watchlist'}
+                  {isInWatchlist ? 'Added to Favourite' : 'Add to Favourite'}
                 </span>
               </button>
               

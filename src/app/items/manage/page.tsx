@@ -370,7 +370,7 @@ export default function ManageStaysPage() {
       ]
     : [
         { id: 'overview', name: 'Overview', icon: LayoutDashboard },
-        { id: 'wishlist', name: 'My Wishlist', icon: Heart },
+        { id: 'wishlist', name: 'Favourites', icon: Heart },
         { id: 'reservation', name: 'My Reservation', icon: Calendar },
         { id: 'profile', name: 'Profile', icon: UserIcon },
       ];
@@ -514,10 +514,10 @@ export default function ManageStaysPage() {
                       <>
                         <div className="glass-panel p-6 rounded-3xl relative overflow-hidden flex items-center justify-between">
                           <div className="space-y-2">
-                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Saved Wishlist</p>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Saved Favourites</p>
                             <h2 className="text-4xl font-black text-white">{watchlist.length}</h2>
                             <button onClick={() => setActiveTab('wishlist')} className="text-xs text-cyan-400 hover:underline flex items-center gap-1 mt-2">
-                              <span>View wishlist</span>
+                              <span>View Favourites</span>
                               <span>→</span>
                             </button>
                           </div>
@@ -577,7 +577,7 @@ export default function ManageStaysPage() {
                   <div>
                     <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-2">
                       <Heart className="w-8 h-8 text-cyan-400 fill-cyan-400/10" />
-                      <span>My Wishlist ({watchlist.length})</span>
+                      <span>Favourites ({watchlist.length})</span>
                     </h1>
                     <p className="text-sm text-gray-400 mt-1">Your saved bespoke retreats and properties</p>
                   </div>
@@ -651,7 +651,7 @@ export default function ManageStaysPage() {
                   ) : (
                     <div className="text-center py-20 glass-panel rounded-3xl space-y-4">
                       <Heart className="w-16 h-16 text-gray-600 mx-auto" />
-                      <h3 className="text-xl font-bold text-white">Your Wishlist is Empty</h3>
+                      <h3 className="text-xl font-bold text-white">Your Favourites are Empty</h3>
                       <p className="text-sm text-gray-400 max-w-sm mx-auto">
                         Explore retreats and click the heart icon on any stay to save it here.
                       </p>
