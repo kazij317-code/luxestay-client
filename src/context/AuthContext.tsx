@@ -41,6 +41,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             role: (session.user as any).role || 'user',
             image: session.user.image || undefined,
           });
+          const tokenRes = await authClient.token();
+          const token = tokenRes.data?.token || '';
+          localStorage.setItem('luxestay_token', token);
         } else {
           setUser(null);
         }
@@ -86,8 +89,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Better Auth sets session cookie, but let's store a token in localStorage if the Express backend needs it.
         // The token plugin in Better Auth stores JWT, we can fetch it via authClient.token() or it's standard in cookies.
         // Wait, since Express backend reads Bearer token from headers, let's fetch the JWT token:
-        const sessionRes = await authClient.getSession();
-        const token = sessionRes.data?.session?.token || '';
+        const tokenRes = await authClient.token();
+        const token = tokenRes.data?.token || '';
         localStorage.setItem('luxestay_token', token);
         localStorage.setItem('luxestay_user', JSON.stringify({
           id: data.user.id,
@@ -129,8 +132,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           image: data.user.image || undefined,
         });
 
-        const sessionRes = await authClient.getSession();
-        const token = sessionRes.data?.session?.token || '';
+        const tokenRes = await authClient.token();
+        const token = tokenRes.data?.token || '';
         localStorage.setItem('luxestay_token', token);
         localStorage.setItem('luxestay_user', JSON.stringify({
           id: data.user.id,
