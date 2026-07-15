@@ -360,6 +360,27 @@ export default function ManageStaysPage() {
     }
   };
 
+  const handleConfirmReservation = async (reservationId: string) => {
+    setActionLoadingId(reservationId);
+    try {
+      const token = localStorage.getItem('luxestay_token');
+      const res = await fetch(`/api/admin/reservations/${reservationId}/confirm`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setReservations(prev => prev.map(r => r.id === reservationId ? { ...r, status: 'Confirmed' } : r));
+      }
+    } catch (err) {
+      console.error("Failed to confirm reservation", err);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
   if (loading || !user) {
     return (
       <div className="flex flex-col min-h-screen bg-slate-dark">
@@ -742,8 +763,12 @@ export default function ManageStaysPage() {
                                   ${res.price}
                                 </td>
                                 <td className="py-4 px-6">
-                                  <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                    {res.status}
+                                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                                    res.status === 'Pending'
+                                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/25'
+                                      : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                  }`}>
+                                    {res.status || 'Pending'}
                                   </span>
                                 </td>
                               </tr>
@@ -1320,9 +1345,19 @@ export default function ManageStaysPage() {
                                 ${res.price}
                               </td>
                               <td className="py-4 px-6">
-                                <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                  {res.status || 'Confirmed'}
-                                </span>
+                                {res.status === 'Pending' ? (
+                                  <button
+                                    onClick={() => handleConfirmReservation(res.id)}
+                                    disabled={actionLoadingId === res.id}
+                                    className="bg-amber-500/10 hover:bg-amber-500/25 text-amber-400 border border-amber-500/25 text-xs font-semibold px-2.5 py-1 rounded-full cursor-pointer transition-all duration-200"
+                                  >
+                                    {actionLoadingId === res.id ? 'Confirming...' : 'Pending'}
+                                  </button>
+                                ) : (
+                                  <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                    {res.status || 'Confirmed'}
+                                  </span>
+                                )}
                               </td>
                             </tr>
                           ))}
