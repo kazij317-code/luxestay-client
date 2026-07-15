@@ -97,7 +97,7 @@ export default function ManageStaysPage() {
       const token = localStorage.getItem('luxestay_token');
       
       // 1. Fetch stays (needed for both user watchlist and admin manage stays)
-      const staysRes = await fetch('/api/stays');
+      const staysRes = await fetch('/api/stays?limit=100');
       const staysData = await staysRes.json();
       let staysList: Stay[] = [];
       if (staysData.success) {

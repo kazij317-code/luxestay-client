@@ -92,7 +92,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchStays() {
       try {
-        const res = await fetch('/api/stays');
+        const res = await fetch('/api/stays?limit=100');
         const data = await res.json();
         if (data.success) {
           const featured = data.data.filter((s: Stay) => s.featured === 'Featured');
