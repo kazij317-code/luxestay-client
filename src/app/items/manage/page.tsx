@@ -1131,7 +1131,6 @@ export default function ManageStaysPage() {
                           <tr className="border-b border-white/10 bg-slate-900/60 text-xs font-bold text-gray-400 uppercase tracking-wider">
                             <th className="py-4 px-6">User</th>
                             <th className="py-4 px-6">Role</th>
-                            <th className="py-4 px-6">Premium</th>
                             <th className="py-4 px-6">Status</th>
                             <th className="py-4 px-6">Joined</th>
                             <th className="py-4 px-6 text-center">Actions</th>
@@ -1162,17 +1161,6 @@ export default function ManageStaysPage() {
                                 }`}>
                                   {usr.role === 'admin' ? 'Admin' : 'User'}
                                 </span>
-                              </td>
-
-                              {/* Premium */}
-                              <td className="py-4 px-6">
-                                {usr.role === 'admin' ? (
-                                  <span className="text-xs text-gray-500">Free</span>
-                                ) : (
-                                  <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                    Premium
-                                  </span>
-                                )}
                               </td>
 
                               {/* Status */}

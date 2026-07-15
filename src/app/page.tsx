@@ -96,7 +96,7 @@ export default function HomePage() {
         const data = await res.json();
         if (data.success) {
           const featured = data.data.filter((s: Stay) => s.featured === 'Featured');
-          setFeaturedStays(featured.length > 0 ? featured.slice(0, 4) : data.data.slice(0, 4));
+          setFeaturedStays(featured);
         }
       } catch (err) {
         console.error("Error fetching stays for homepage", err);
@@ -241,7 +241,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {loading ? (
             <SkeletonLoader count={4} />
-          ) : (
+          ) : featuredStays.length > 0 ? (
             featuredStays.map((stay) => (
               <PropertyCard
                 key={stay.id}
@@ -255,6 +255,10 @@ export default function HomePage() {
                 category={stay.category}
               />
             ))
+          ) : (
+            <div className="col-span-full text-center py-12 bg-white/[0.01] border border-dashed border-white/10 rounded-2xl">
+              <p className="text-gray-400 text-sm">No special stay highlights featured at the moment.</p>
+            </div>
           )}
         </div>
       </section>
