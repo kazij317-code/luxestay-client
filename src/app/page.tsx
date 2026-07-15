@@ -112,11 +112,23 @@ export default function HomePage() {
     router.push(`/explore?search=${encodeURIComponent(searchQuery)}&category=${selectedCategory}`);
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newsletterEmail.trim()) {
-      setSubscribed(true);
-      setNewsletterEmail('');
+      try {
+        const res = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: newsletterEmail })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setSubscribed(true);
+          setNewsletterEmail('');
+        }
+      } catch (err) {
+        console.error("Failed to subscribe newsletter", err);
+      }
     }
   };
 

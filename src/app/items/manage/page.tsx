@@ -53,6 +53,7 @@ export default function ManageStaysPage() {
   const [reservations, setReservations] = useState<ReservationItem[]>([]); // User's or admin's reservations
   const [usersList, setUsersList] = useState<UserItem[]>([]); // Admin: all users in system
   const [inquiriesList, setInquiriesList] = useState<any[]>([]); // Admin: all inquiries in system
+  const [subscribersList, setSubscribersList] = useState<any[]>([]); // Admin: all newsletter subscribers
   
   const [fetching, setFetching] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
@@ -131,6 +132,15 @@ export default function ManageStaysPage() {
         const inquiriesData = await inquiriesRes.json();
         if (inquiriesData.success) {
           setInquiriesList(inquiriesData.data);
+        }
+
+        // Fetch newsletter subscribers
+        const subscribersRes = await fetch('/api/admin/subscriptions', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const subscribersData = await subscribersRes.json();
+        if (subscribersData.success) {
+          setSubscribersList(subscribersData.data);
         }
       } else {
         // Regular User Data Load
@@ -404,6 +414,7 @@ export default function ManageStaysPage() {
         { id: 'manage-stays', name: 'Manage Stays', icon: Compass },
         { id: 'transactions', name: 'Transactions', icon: CreditCard },
         { id: 'inquiries', name: 'Inquiries', icon: Mail },
+        { id: 'subscribers', name: 'Subscribers', icon: Sparkles },
         { id: 'profile', name: 'Profile', icon: UserIcon },
       ]
     : [
@@ -503,7 +514,7 @@ export default function ManageStaysPage() {
                   </div>
 
                   {/* Cards Display */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {isAdmin ? (
                       <>
                         <div className="glass-panel p-6 rounded-3xl relative overflow-hidden flex items-center justify-between">
@@ -559,6 +570,20 @@ export default function ManageStaysPage() {
                           </div>
                           <div className="p-3 bg-white/5 rounded-2xl">
                             <Mail className="w-6 h-6 text-emerald-400" />
+                          </div>
+                        </div>
+
+                        <div className="glass-panel p-6 rounded-3xl relative overflow-hidden flex items-center justify-between">
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Subscribers</p>
+                            <h2 className="text-4xl font-black text-white">{subscribersList.length}</h2>
+                            <button onClick={() => setActiveTab('subscribers')} className="text-xs text-cyan-400 hover:underline flex items-center gap-1 mt-2">
+                              <span>View details</span>
+                              <span>→</span>
+                            </button>
+                          </div>
+                          <div className="p-3 bg-white/5 rounded-2xl">
+                            <Sparkles className="w-6 h-6 text-yellow-400" />
                           </div>
                         </div>
                       </>
@@ -1418,6 +1443,58 @@ export default function ManageStaysPage() {
                                   {new Date(inq.createdAt).toLocaleDateString(undefined, {
                                     month: 'short',
                                     day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ADMIN: SUBSCRIBERS */}
+              {activeTab === 'subscribers' && isAdmin && (
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-2">
+                      <Sparkles className="w-8 h-8 text-cyan-400" />
+                      <span>Newsletter Subscribers ✉️</span>
+                    </h1>
+                    <p className="text-sm text-gray-400 mt-1">Review premium newsletter signups and user subscriptions</p>
+                  </div>
+
+                  <div className="glass-panel rounded-3xl overflow-hidden border border-white/5 shadow-xl">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-white/10 bg-slate-900/60 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                            <th className="py-4 px-6">Subscriber Email</th>
+                            <th className="py-4 px-6">Subscription Date</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5 text-sm">
+                          {subscribersList.length === 0 ? (
+                            <tr>
+                              <td colSpan={2} className="py-8 text-center text-gray-500">
+                                No newsletter subscribers found.
+                              </td>
+                            </tr>
+                          ) : (
+                            subscribersList.map((sub) => (
+                              <tr key={sub.id} className="hover:bg-white/[0.02] transition-colors">
+                                <td className="py-4 px-6 text-white font-semibold">
+                                  {sub.email}
+                                </td>
+                                <td className="py-4 px-6 text-gray-400">
+                                  {new Date(sub.createdAt).toLocaleDateString(undefined, {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
                                     hour: '2-digit',
                                     minute: '2-digit'
                                   })}
