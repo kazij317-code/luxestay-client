@@ -1280,7 +1280,6 @@ export default function ManageStaysPage() {
                                 <div className="flex items-center justify-center space-x-1.5">
                                   <Link
                                     href={`/stays/${stay.id}`}
-                                    target="_blank"
                                     className="px-2 py-1 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 transition-all flex items-center space-x-1 cursor-pointer"
                                   >
                                     <Eye className="w-3 h-3" />
