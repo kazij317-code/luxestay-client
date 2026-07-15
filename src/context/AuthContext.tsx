@@ -139,26 +139,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data?.user) {
-        setUser({
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: (data.user as any).role || 'user',
-          image: data.user.image || undefined,
-        });
+        // Sign out automatically logged in user to force manual login
+        await authClient.signOut();
+        setUser(null);
+        localStorage.removeItem('luxestay_token');
+        localStorage.removeItem('luxestay_user');
 
-        const tokenRes = await authClient.token();
-        const token = tokenRes.data?.token || '';
-        localStorage.setItem('luxestay_token', token);
-        localStorage.setItem('luxestay_user', JSON.stringify({
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: (data.user as any).role || 'user',
-          image: data.user.image || undefined,
-        }));
-
-        router.push('/items/manage');
+        router.push('/login');
         return { success: true };
       }
       return { success: false, error: 'Registration failed' };
