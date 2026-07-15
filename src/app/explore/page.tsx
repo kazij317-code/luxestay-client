@@ -17,7 +17,7 @@ function ExploreContent() {
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [category, setCategory] = useState(searchParams.get('category') || 'All');
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const [minRating, setMinRating] = useState(0);
   const [sort, setSort] = useState('rating_desc');
   const [page, setPage] = useState(1);
@@ -81,7 +81,7 @@ function ExploreContent() {
     setSearch('');
     setCategory('All');
     setMinPrice(0);
-    setMaxPrice(1000);
+    setMaxPrice(10000);
     setMinRating(0);
     setSort('rating_desc');
     setPage(1);
@@ -149,8 +149,8 @@ function ExploreContent() {
               <input
                 type="range"
                 min="0"
-                max="1000"
-                step="50"
+                max="10000"
+                step="100"
                 value={maxPrice}
                 onChange={(e) => {
                   setMaxPrice(Number(e.target.value));
@@ -160,7 +160,7 @@ function ExploreContent() {
               />
               <div className="flex justify-between text-[10px] text-gray-500 font-bold">
                 <span>$0</span>
-                <span>$1,000+</span>
+                <span>$10,000+</span>
               </div>
             </div>
 
