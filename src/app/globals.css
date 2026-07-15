@@ -124,3 +124,26 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+
+/* Improve font visibility in light mode by increasing contrast on gray and translucent text */
+html:not(.dark) .text-gray-400 {
+  color: #4B5563 !important; /* Muted gray -> Darker gray-600 */
+}
+html:not(.dark) .text-gray-500 {
+  color: #374151 !important; /* Medium gray -> Darker gray-700 */
+}
+html:not(.dark) .text-gray-300 {
+  color: #1F2937 !important; /* Light-gray -> Deep gray-800 */
+}
+html:not(.dark) .text-gray-200 {
+  color: #111827 !important; /* Near-white -> Deep gray-900 */
+}
+html:not(.dark) .text-white\/60,
+html:not(.dark) .text-white\/50,
+html:not(.dark) .text-white\/70,
+html:not(.dark) .text-white\/80 {
+  color: rgba(15, 23, 42, 0.75) !important; /* Semitransparent white -> Semitransparent dark slate */
+}
+html:not(.dark) .text-white {
+  color: #0F172A !important; /* White -> Dark Slate */
+}
