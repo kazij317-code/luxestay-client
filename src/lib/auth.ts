@@ -31,6 +31,11 @@ export const auth = betterAuth({
       image: {
         type: "string",
         required: false,
+      },
+      isBlocked: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
       }
     }
   }

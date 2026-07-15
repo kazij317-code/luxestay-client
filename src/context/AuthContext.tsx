@@ -35,6 +35,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { data: session } = await authClient.getSession();
         if (session?.user) {
+          if ((session.user as any).isBlocked) {
+            await authClient.signOut();
+            setUser(null);
+            localStorage.removeItem('luxestay_token');
+            localStorage.removeItem('luxestay_user');
+            return;
+          }
           setUser({
             id: session.user.id,
             name: session.user.name,
@@ -79,6 +86,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data?.user) {
+        if ((data.user as any).isBlocked) {
+          await authClient.signOut();
+          setUser(null);
+          localStorage.removeItem('luxestay_token');
+          localStorage.removeItem('luxestay_user');
+          return { success: false, error: 'Your account has been blocked by the admin.' };
+        }
         setUser({
           id: data.user.id,
           name: data.user.name,
