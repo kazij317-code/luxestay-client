@@ -36,13 +36,14 @@
   --color-gold: var(--gold);
   --color-gold-hover: var(--gold-hover);
   --color-slate-dark: var(--background);
-  --color-white: var(--foreground); /* Maps white text to foreground dynamically in theme */
+  --color-white: var(--foreground);
+  /* Maps white text to foreground dynamically in theme */
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  background-image: 
+  background-image:
     radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.04) 0px, transparent 50%),
     radial-gradient(at 50% 0%, rgba(16, 185, 129, 0.02) 0px, transparent 50%),
     radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.02) 0px, transparent 50%);
@@ -112,13 +113,14 @@ body {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(30,41,59,0.5) 25%, rgba(51,65,85,0.5) 50%, rgba(30,41,59,0.5) 75%);
+  background: linear-gradient(90deg, rgba(30, 41, 59, 0.5) 25%, rgba(51, 65, 85, 0.5) 50%, rgba(30, 41, 59, 0.5) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

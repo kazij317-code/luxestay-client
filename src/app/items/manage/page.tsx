@@ -7,8 +7,8 @@ import { useAuth } from '@/context/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Stay } from '@/data/db';
-import { 
-  Trash2, Eye, PlusCircle, Compass, Settings, 
+import {
+  Trash2, Eye, PlusCircle, Compass, Settings,
   MapPin, DollarSign, Star, AlertCircle, RefreshCw,
   LayoutDashboard, Heart, Calendar, User as UserIcon, LogOut,
   Image as ImageIcon, Sparkles, Check, CheckCircle, Shield, Users, CreditCard, X, Mail
@@ -54,7 +54,7 @@ export default function ManageStaysPage() {
   const [usersList, setUsersList] = useState<UserItem[]>([]); // Admin: all users in system
   const [inquiriesList, setInquiriesList] = useState<any[]>([]); // Admin: all inquiries in system
   const [subscribersList, setSubscribersList] = useState<any[]>([]); // Admin: all newsletter subscribers
-  
+
   const [fetching, setFetching] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -95,7 +95,7 @@ export default function ManageStaysPage() {
     setError('');
     try {
       const token = localStorage.getItem('luxestay_token');
-      
+
       // 1. Fetch stays (needed for both user watchlist and admin manage stays)
       const staysRes = await fetch('/api/stays?limit=100');
       const staysData = await staysRes.json();
@@ -227,7 +227,7 @@ export default function ManageStaysPage() {
     if (!confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
       return;
     }
-    
+
     setActionLoadingId(stayId);
     setError('');
 
@@ -238,7 +238,7 @@ export default function ManageStaysPage() {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
-      
+
       if (res.ok && data.success) {
         setAllStays(prev => prev.filter(s => s.id !== stayId));
       } else {
@@ -354,7 +354,7 @@ export default function ManageStaysPage() {
         setWifi(true);
         setPool(false);
         setKitchen(true);
-        
+
         loadDashboardData();
         setTimeout(() => {
           setActiveTab('manage-stays');
@@ -406,30 +406,30 @@ export default function ManageStaysPage() {
   const isAdmin = user.role === 'admin';
 
   // Sidebar Menu list configured dynamically by role
-  const menuItems = isAdmin 
+  const menuItems = isAdmin
     ? [
-        { id: 'overview', name: 'Overview', icon: LayoutDashboard },
-        { id: 'add', name: 'Add Listing', icon: PlusCircle },
-        { id: 'manage-users', name: 'Manage Users', icon: Users },
-        { id: 'manage-stays', name: 'Manage Stays', icon: Compass },
-        { id: 'transactions', name: 'Transactions', icon: CreditCard },
-        { id: 'inquiries', name: 'Inquiries', icon: Mail },
-        { id: 'subscribers', name: 'Subscribers', icon: Sparkles },
-        { id: 'profile', name: 'Profile', icon: UserIcon },
-      ]
+      { id: 'overview', name: 'Overview', icon: LayoutDashboard },
+      { id: 'add', name: 'Add Listing', icon: PlusCircle },
+      { id: 'manage-users', name: 'Manage Users', icon: Users },
+      { id: 'manage-stays', name: 'Manage Stays', icon: Compass },
+      { id: 'transactions', name: 'Transactions', icon: CreditCard },
+      { id: 'inquiries', name: 'Inquiries', icon: Mail },
+      { id: 'subscribers', name: 'Subscribers', icon: Sparkles },
+      { id: 'profile', name: 'Profile', icon: UserIcon },
+    ]
     : [
-        { id: 'overview', name: 'Overview', icon: LayoutDashboard },
-        { id: 'wishlist', name: 'Favourites', icon: Heart },
-        { id: 'reservation', name: 'My Reservation', icon: Calendar },
-        { id: 'profile', name: 'Profile', icon: UserIcon },
-      ];
+      { id: 'overview', name: 'Overview', icon: LayoutDashboard },
+      { id: 'wishlist', name: 'Favourites', icon: Heart },
+      { id: 'reservation', name: 'My Reservation', icon: Calendar },
+      { id: 'profile', name: 'Profile', icon: UserIcon },
+    ];
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-dark text-white">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full flex flex-col md:flex-row gap-8">
-        
+
         {/* Left Sidebar Layout */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-6">
           <div className="glass-panel p-6 rounded-3xl text-center space-y-4">
@@ -464,18 +464,17 @@ export default function ManageStaysPage() {
                     setActiveTab(item.id);
                     setError('');
                   }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                    activeTab === item.id
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 cursor-pointer ${activeTab === item.id
                       ? 'bg-gradient-to-r from-cyan-500/10 to-purple-500/10 text-cyan-400 border border-cyan-500/20'
                       : 'text-gray-300 hover:text-white hover:bg-white/5 border border-transparent'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.name}</span>
                 </button>
               );
             })}
-            
+
             <button
               onClick={logout}
               className="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-sm font-semibold text-red-500 hover:bg-red-500/10 transition-all border border-transparent text-left cursor-pointer"
@@ -488,7 +487,7 @@ export default function ManageStaysPage() {
 
         {/* Right Content Area */}
         <main className="flex-grow min-w-0">
-          
+
           {error && (
             <div className="flex items-center space-x-2 bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-red-400 text-sm mb-6">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -640,7 +639,7 @@ export default function ManageStaysPage() {
                       </span>
                     </div>
                     <p className="text-xs sm:text-sm text-gray-300">
-                      {isAdmin 
+                      {isAdmin
                         ? 'Manage property inventory, authorize features, review transactions, and block/unblock system credentials.'
                         : 'Explore premium stays, secure luxury bookings, and customize your retreats catalog in real time.'}
                     </p>
@@ -676,8 +675,8 @@ export default function ManageStaysPage() {
                             {watchlist.map((stay) => (
                               <tr key={stay.id} className="hover:bg-white/[0.02] transition-colors">
                                 <td className="py-4 px-6 flex items-center space-x-4">
-                                  <img 
-                                    src={stay.image} 
+                                  <img
+                                    src={stay.image}
                                     alt={stay.title}
                                     className="w-14 h-14 rounded-xl object-cover border border-white/5 flex-shrink-0"
                                   />
@@ -732,8 +731,8 @@ export default function ManageStaysPage() {
                       <p className="text-sm text-gray-400 max-w-sm mx-auto">
                         Explore retreats and click the heart icon on any stay to save it here.
                       </p>
-                      <Link 
-                        href="/explore" 
+                      <Link
+                        href="/explore"
                         className="inline-block bg-gold hover:bg-gold-hover text-slate-dark font-bold text-sm px-6 py-3 rounded-xl shadow-lg transition-all"
                       >
                         Explore Stays
@@ -770,8 +769,8 @@ export default function ManageStaysPage() {
                             {reservations.map((res) => (
                               <tr key={res.id} className="hover:bg-white/[0.02] transition-colors">
                                 <td className="py-4 px-6 flex items-center space-x-4">
-                                  <img 
-                                    src={res.image || "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=150&q=80"} 
+                                  <img
+                                    src={res.image || "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=150&q=80"}
                                     alt={res.propertyTitle}
                                     className="w-12 h-12 rounded-lg object-cover border border-white/5 flex-shrink-0"
                                   />
@@ -788,11 +787,10 @@ export default function ManageStaysPage() {
                                   ${res.price}
                                 </td>
                                 <td className="py-4 px-6">
-                                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                    res.status === 'Pending'
+                                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${res.status === 'Pending'
                                       ? 'bg-amber-500/10 text-amber-400 border border-amber-500/25'
                                       : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                  }`}>
+                                    }`}>
                                     {res.status || 'Pending'}
                                   </span>
                                 </td>
@@ -809,8 +807,8 @@ export default function ManageStaysPage() {
                       <p className="text-sm text-gray-400 max-w-sm mx-auto">
                         Find a villa or treehouse and request a reservation.
                       </p>
-                      <Link 
-                        href="/explore" 
+                      <Link
+                        href="/explore"
                         className="inline-block bg-gold hover:bg-gold-hover text-slate-dark font-bold text-sm px-6 py-3 rounded-xl shadow-lg transition-all"
                       >
                         Find Luxury Stays
@@ -840,7 +838,7 @@ export default function ManageStaysPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-400 uppercase">Property Title *</label>
-                          <input 
+                          <input
                             type="text"
                             required
                             placeholder="e.g. Sapphire Overwater Villa"
@@ -852,7 +850,7 @@ export default function ManageStaysPage() {
 
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-400 uppercase">Location *</label>
-                          <input 
+                          <input
                             type="text"
                             required
                             placeholder="e.g. Amalfi Coast, Italy"
@@ -881,7 +879,7 @@ export default function ManageStaysPage() {
 
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-400 uppercase">Price per Night ($) *</label>
-                          <input 
+                          <input
                             type="number"
                             required
                             min="1"
@@ -895,12 +893,12 @@ export default function ManageStaysPage() {
                       {/* Image Fields Section */}
                       <div className="space-y-4 border-t border-white/5 pt-4">
                         <h3 className="text-xs font-bold text-gold uppercase tracking-wider">Property Images</h3>
-                        
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase">Main Image URL / Upload *</label>
                             <div className="relative flex gap-2">
-                              <input 
+                              <input
                                 type="url"
                                 required
                                 placeholder="Enter image URL or upload"
@@ -910,8 +908,8 @@ export default function ManageStaysPage() {
                               />
                               <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                                 <span>{uploadingMain ? '...' : 'Upload'}</span>
-                                <input 
-                                  type="file" 
+                                <input
+                                  type="file"
                                   accept="image/*"
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -927,7 +925,7 @@ export default function ManageStaysPage() {
                           <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 1 (Optional)</label>
                             <div className="relative flex gap-2">
-                              <input 
+                              <input
                                 type="url"
                                 placeholder="Enter image URL or upload"
                                 value={galleryImg1}
@@ -936,8 +934,8 @@ export default function ManageStaysPage() {
                               />
                               <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                                 <span>{uploadingG1 ? '...' : 'Upload'}</span>
-                                <input 
-                                  type="file" 
+                                <input
+                                  type="file"
                                   accept="image/*"
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -953,7 +951,7 @@ export default function ManageStaysPage() {
                           <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 2 (Optional)</label>
                             <div className="relative flex gap-2">
-                              <input 
+                              <input
                                 type="url"
                                 placeholder="Enter image URL or upload"
                                 value={galleryImg2}
@@ -962,8 +960,8 @@ export default function ManageStaysPage() {
                               />
                               <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                                 <span>{uploadingG2 ? '...' : 'Upload'}</span>
-                                <input 
-                                  type="file" 
+                                <input
+                                  type="file"
                                   accept="image/*"
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -979,7 +977,7 @@ export default function ManageStaysPage() {
                           <div className="space-y-1">
                             <label className="text-xs font-semibold text-gray-400 uppercase">Gallery Image 3 (Optional)</label>
                             <div className="relative flex gap-2">
-                              <input 
+                              <input
                                 type="url"
                                 placeholder="Enter image URL or upload"
                                 value={galleryImg3}
@@ -988,8 +986,8 @@ export default function ManageStaysPage() {
                               />
                               <label className="cursor-pointer bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-300 px-4 py-3 rounded-xl text-sm font-semibold border border-white/5 hover:border-gold/20 transition-all flex items-center justify-center min-w-[80px]">
                                 <span>{uploadingG3 ? '...' : 'Upload'}</span>
-                                <input 
-                                  type="file" 
+                                <input
+                                  type="file"
                                   accept="image/*"
                                   onChange={(e) => {
                                     const file = e.target.files?.[0];
@@ -1007,7 +1005,7 @@ export default function ManageStaysPage() {
                       <div className="space-y-4">
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-400 uppercase">Short Description *</label>
-                          <input 
+                          <input
                             type="text"
                             required
                             maxLength={120}
@@ -1020,7 +1018,7 @@ export default function ManageStaysPage() {
 
                         <div className="space-y-1">
                           <label className="text-xs font-semibold text-gray-400 uppercase">Full Description / Overview *</label>
-                          <textarea 
+                          <textarea
                             rows={4}
                             required
                             placeholder="Write a thorough overview detailing architectural style, private features, proximity, and check-in specifications."
@@ -1033,11 +1031,11 @@ export default function ManageStaysPage() {
 
                       <div className="glass-panel bg-slate-900/40 p-5 rounded-2xl border border-white/5 space-y-4">
                         <h3 className="text-xs font-bold text-gold uppercase tracking-wider">Property Specifications & Amenities</h3>
-                        
+
                         <div className="grid grid-cols-3 gap-4">
                           <div className="space-y-1">
                             <label className="text-[10px] font-semibold text-gray-400 uppercase">Beds Count</label>
-                            <input 
+                            <input
                               type="number"
                               min="1"
                               value={beds}
@@ -1047,7 +1045,7 @@ export default function ManageStaysPage() {
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-semibold text-gray-400 uppercase">Max Guests</label>
-                            <input 
+                            <input
                               type="number"
                               min="1"
                               value={guests}
@@ -1057,7 +1055,7 @@ export default function ManageStaysPage() {
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] font-semibold text-gray-400 uppercase">Bathrooms</label>
-                            <input 
+                            <input
                               type="number"
                               min="0.5"
                               step="0.5"
@@ -1070,7 +1068,7 @@ export default function ManageStaysPage() {
 
                         <div className="grid grid-cols-3 gap-4 pt-2">
                           <label className="flex items-center space-x-2.5 text-xs text-gray-300 cursor-pointer">
-                            <input 
+                            <input
                               type="checkbox"
                               checked={wifi}
                               onChange={(e) => setWifi(e.target.checked)}
@@ -1078,9 +1076,9 @@ export default function ManageStaysPage() {
                             />
                             <span>Free Wi-Fi</span>
                           </label>
-                          
+
                           <label className="flex items-center space-x-2.5 text-xs text-gray-300 cursor-pointer">
-                            <input 
+                            <input
                               type="checkbox"
                               checked={pool}
                               onChange={(e) => setPool(e.target.checked)}
@@ -1090,7 +1088,7 @@ export default function ManageStaysPage() {
                           </label>
 
                           <label className="flex items-center space-x-2.5 text-xs text-gray-300 cursor-pointer">
-                            <input 
+                            <input
                               type="checkbox"
                               checked={kitchen}
                               onChange={(e) => setKitchen(e.target.checked)}
@@ -1154,22 +1152,20 @@ export default function ManageStaysPage() {
 
                               {/* Role */}
                               <td className="py-4 px-6">
-                                <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                  usr.role === 'admin'
+                                <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${usr.role === 'admin'
                                     ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                                     : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                                }`}>
+                                  }`}>
                                   {usr.role === 'admin' ? 'Admin' : 'User'}
                                 </span>
                               </td>
 
                               {/* Status */}
                               <td className="py-4 px-6">
-                                <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                  usr.isBlocked
+                                <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${usr.isBlocked
                                     ? 'bg-red-500/10 text-red-400 border border-red-500/20'
                                     : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                }`}>
+                                  }`}>
                                   {usr.isBlocked ? 'Blocked' : 'Active'}
                                 </span>
                               </td>
@@ -1193,11 +1189,10 @@ export default function ManageStaysPage() {
                                     <button
                                       disabled={actionLoadingId === usr.id}
                                       onClick={() => handleToggleBlockUser(usr.id)}
-                                      className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                                        usr.isBlocked
+                                      className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${usr.isBlocked
                                           ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
                                           : 'bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20'
-                                      }`}
+                                        }`}
                                     >
                                       {usr.isBlocked ? 'Unblock' : 'Block'}
                                     </button>
@@ -1225,90 +1220,88 @@ export default function ManageStaysPage() {
                   </div>
 
                   <div className="glass-panel rounded-3xl overflow-hidden border border-white/5 shadow-xl">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left border-collapse">
+                    <div className="overflow-hidden">
+                      <table className="w-full text-left border-collapse table-layout: auto">
                         <thead>
                           <tr className="border-b border-white/10 bg-slate-900/60 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                            <th className="py-4 px-6">Stay</th>
-                            <th className="py-4 px-6">Author/Host</th>
-                            <th className="py-4 px-6">Category</th>
-                            <th className="py-4 px-6">Rating</th>
-                            <th className="py-4 px-6">Featured</th>
-                            <th className="py-4 px-6 text-center">Actions</th>
+                            <th className="py-4 px-3">Stay</th>
+                            <th className="py-4 px-3">Author/Host</th>
+                            <th className="py-4 px-3">Category</th>
+                            <th className="py-4 px-3">Rating</th>
+                            <th className="py-4 px-3">Featured</th>
+                            <th className="py-4 px-3 text-center">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 text-sm">
                           {allStays.map((stay) => (
                             <tr key={stay.id} className="hover:bg-white/[0.02] transition-colors">
                               {/* Stay details */}
-                              <td className="py-4 px-6 flex items-center space-x-3">
+                              <td className="py-4 px-3 flex items-center space-x-2">
                                 <img
                                   src={stay.image}
                                   alt={stay.title}
-                                  className="w-12 h-12 rounded-lg object-cover border border-white/5 flex-shrink-0"
+                                  className="w-10 h-10 rounded-lg object-cover border border-white/5 flex-shrink-0"
                                 />
-                                <span className="font-bold text-white max-w-[200px] truncate">{stay.title}</span>
+                                <span className="font-bold text-white max-w-[150px] truncate">{stay.title}</span>
                               </td>
 
                               {/* Author/Host */}
-                              <td className="py-4 px-6 text-gray-300">
+                              <td className="py-4 px-3 text-gray-300">
                                 {stay.hostName || 'Host'}
                               </td>
 
                               {/* Category */}
-                              <td className="py-4 px-6">
-                                <span className="bg-white/5 text-gold border border-gold/10 text-xs font-semibold px-2.5 py-1 rounded-full">
+                              <td className="py-4 px-3">
+                                <span className="bg-white/5 text-gold border border-gold/10 text-xs font-semibold px-2 py-0.5 rounded-full">
                                   {stay.category}
                                 </span>
                               </td>
 
                               {/* Rating */}
-                              <td className="py-4 px-6 text-gray-300 font-bold">
-                                <div className="flex items-center space-x-1.5">
-                                  <Star className="w-3.5 h-3.5 fill-gold text-gold" />
-                                  <span>{stay.rating ? stay.rating.toFixed(2) : '5.00'}</span>
+                              <td className="py-4 px-3 text-gray-300 font-bold">
+                                <div className="flex items-center space-x-1">
+                                  <Star className="w-3 h-3 fill-gold text-gold" />
+                                  <span className="text-xs">{stay.rating ? stay.rating.toFixed(2) : '5.00'}</span>
                                 </div>
                               </td>
 
                               {/* Featured status */}
-                              <td className="py-4 px-6">
-                                <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${
-                                  stay.featured === 'Featured'
+                              <td className="py-4 px-3">
+                                <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full ${stay.featured === 'Featured'
                                     ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                                     : 'bg-white/5 text-gray-400 border border-white/10'
-                                }`}>
+                                  }`}>
                                   {stay.featured === 'Featured' ? 'Featured' : 'Regular'}
                                 </span>
                               </td>
 
                               {/* Actions */}
-                              <td className="py-4 px-6">
-                                <div className="flex items-center justify-center space-x-2">
+                              <td className="py-4 px-3">
+                                <div className="flex items-center justify-center space-x-1.5">
                                   <Link
                                     href={`/stays/${stay.id}`}
                                     target="_blank"
-                                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 transition-all flex items-center space-x-1 cursor-pointer"
+                                    className="px-2 py-1 rounded-lg text-xs font-semibold bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 transition-all flex items-center space-x-1 cursor-pointer"
                                   >
-                                    <Eye className="w-3.5 h-3.5" />
+                                    <Eye className="w-3 h-3" />
                                     <span>View</span>
                                   </Link>
                                   <button
                                     disabled={actionLoadingId === stay.id}
                                     onClick={() => handleToggleFeaturedStay(stay.id)}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                                      stay.featured === 'Featured'
+                                    className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${stay.featured === 'Featured'
                                         ? 'bg-white/5 hover:bg-gold/15 text-gold border border-gold/20'
                                         : 'bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/20'
-                                    }`}
+                                      }`}
                                   >
                                     {stay.featured === 'Featured' ? 'Unfeature' : 'Feature'}
                                   </button>
                                   <button
                                     disabled={actionLoadingId === stay.id}
                                     onClick={() => handleDeleteStay(stay.id)}
-                                    className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors border border-red-500/20 disabled:opacity-50 cursor-pointer"
+                                    className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors border border-red-500/20 disabled:opacity-50 cursor-pointer"
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-3.5 h-3.5" />
                                   </button>
                                 </div>
                               </td>
@@ -1569,7 +1562,7 @@ export default function ManageStaysPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-slate-900/90 border border-white/10 rounded-3xl p-8 max-w-sm w-full space-y-6 relative overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Close X Button */}
-            <button 
+            <button
               onClick={() => setShowUpdateModal(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white cursor-pointer"
             >
@@ -1600,7 +1593,7 @@ export default function ManageStaysPage() {
               {/* Name field */}
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Full Name</label>
-                <input 
+                <input
                   type="text"
                   required
                   placeholder="Enter your name"
@@ -1613,7 +1606,7 @@ export default function ManageStaysPage() {
               {/* Avatar URL field */}
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Avatar Image URL</label>
-                <input 
+                <input
                   type="text"
                   placeholder="https://..."
                   value={updateAvatar}
