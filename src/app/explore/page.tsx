@@ -247,10 +247,9 @@ function ExploreContent() {
             Showing {loading ? '...' : stays.length} of {totalCount} properties found.
           </div>
 
-          {/* Stays Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {loading ? (
-              <SkeletonLoader count={6} />
+              <SkeletonLoader count={8} />
             ) : stays.length > 0 ? (
               stays.map((stay) => (
                 <PropertyCard
