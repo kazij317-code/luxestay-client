@@ -1,164 +1,209 @@
-🏨 LuxeStay – Bespoke Luxury Vacation Rental Platform
-LuxeStay is a premium, full-stack vacation rental platform designed for the discerning traveler. It offers a curated collection of architecturally unique cabins, beachfront villas, and luxury penthouses. The platform provides a seamless experience for both travelers—who receive 24/7 dedicated concierge service—and hosts, who can leverage the platform to maximize their property's revenue potential within an exclusive, high-net-worth traveler network.
+# 🏡 LuxeStay – Premium Luxury Property Booking Platform
 
-🌐 Live Demo
+LuxeStay is a modern full-stack luxury property booking platform where travelers can discover, explore, and reserve premium villas, mansions, cabins, and luxury houses from around the world. Users can browse beautiful properties, view detailed information, save favorites, make bookings, and enjoy a seamless luxury travel experience through a responsive and intuitive user interface.
+
+---
+
+## 🌐 Live Demo
+
 🔗 https://luxestay-client-pi.vercel.app
 
-📂 GitHub Repository
-(Note: Please update the placeholders below with your actual repository links.)
+---
 
-Client
-🔗 [https://github.com/yourusername/luxestay-client](https://github.com/yourusername/luxestay-client)
+## 📂 GitHub Repository
 
-Server
-🔗 [https://github.com/yourusername/luxestay-server](https://github.com/yourusername/luxestay-server)
+### Client
 
-📸 Screenshot
-✨ Main Features
-🔐 Authentication & Security
-Secure user registration and login functionality.
+🔗 Add Client Repository URL
 
-Role-based access control (Traveler, Host, Admin).
+### Server
 
-Protected routes for sensitive account and booking management.
+🔗 Add Server Repository URL
 
-Secure session handling.
+---
 
-🏨 Property Exploration & Booking
-Curated Selections: Browse premium cabins, beachfront villas, and luxury penthouses.
+## 📸 Screenshot
 
-Advanced Filtering: Explore properties by category (Cabins, Beachfront, Penthouses).
+![LuxeStay Screenshot](./public/luxestay-home.png)
 
-Detailed Listings: High-quality property descriptions and amenities overview.
+---
 
-Concierge Support: Access to 24/7 dedicated private concierge services for guests.
+## ✨ Main Features
 
-🏠 Host Dashboard
-Property Management: List, edit, and manage luxury properties.
+### 🔐 Authentication & Authorization
 
-Revenue Analytics: Monitor monthly yield, bookings, and financial growth.
+* Secure user registration and login
+* JWT-based authentication
+* Protected routes
+* User-specific dashboard access
+* Role-based authorization (Admin/User)
+* Secure API access control
 
-Booking Requests: Manage inquiries from potential guests.
+### 🏡 Luxury Property Management
 
-💎 The LuxeStay Standard
-Vetted Listings: Every property undergoes rigorous physical inspection for architectural excellence and security.
+* Add new luxury properties
+* Edit and update property information
+* Delete properties
+* View property details
+* Manage personal property listings
+* Upload multiple property images
+* Manage property facilities
 
-Trust & Safety: Verified host profiles, secure checkout, and emergency support.
+### 🌍 Property Discovery
 
-📱 Responsive User Experience
-Mobile-First Design: Fully responsive interface optimized for mobile, tablet, and desktop.
+* Browse premium luxury properties
+* Search properties by title
+* Explore properties by category
+* View property location details
+* Filter properties based on preferences
+* Dynamic property discovery experience
 
-Modern UI: Clean, elegant design tailored for high-end hospitality.
+### 🏠 Property Categories
 
-🛠️ Tech Stack
-Frontend
-Next.js (App Router)
+Supported Property Types:
 
-React.js
+* Luxury Villas
+* Luxury Mansions
+* Luxury Houses
+* Modern Apartments
+* Beach Houses
+* Cabins
+* Resort Properties
 
-Tailwind CSS
+### ⭐ Property Details
 
-Framer Motion (for polished interactions)
+Each property includes:
 
-Axios (for data fetching)
+* Property title
+* Short description
+* Full description
+* Property images gallery
+* Price per night
+* Location
+* Rating
+* Bedrooms
+* Guest capacity
+* Bathrooms
+* Wi-Fi availability
+* Swimming pool facility
+* Kitchen facility
 
-Backend
-Node.js
+### ❤️ Wishlist & Favorites
 
-Express.js
+* Save favorite properties
+* Remove properties from wishlist
+* Personalized user experience
+* Quick access to preferred properties
 
-Database
-MongoDB Atlas
+### 📅 Booking System
 
-Deployment
-Vercel (Frontend)
+* Reserve luxury properties
+* Booking management system
+* View booking history
+* Track reservation details
+* Manage upcoming stays
 
-🚀 Setup Instructions
-1. Clone the Repositories
-Bash
-git clone https://github.com/yourusername/luxestay-client
-git clone https://github.com/yourusername/luxestay-server
-2. Install Dependencies
-Client:
+### ⭐ Review & Rating System
 
-Bash
-cd luxestay-client
-npm install
-Server:
+* Add property reviews
+* Share guest experiences
+* View customer feedback
+* Rating-based property evaluation
 
-Bash
-cd luxestay-server
-npm install
-3. Configure Environment Variables
-Create a .env.local file in the client directory and a .env file in the server directory. Ensure you include:
+### 👨‍💼 Admin Dashboard
 
-NEXT_PUBLIC_API_URL
+* Manage all users
+* Block and unblock users
+* Manage properties
+* Add or remove property listings
+* Monitor bookings
+* Manage platform activities
 
-MONGO_URI
+### 🔍 Search & Filtering
 
-JWT_SECRET
+* Search properties by name
+* Filter by category
+* Filter by location
+* Filter by facilities
+* Dynamic luxury property browsing
 
-4. Run the Development Servers
-Client:
+### 📱 Responsive User Experience
 
-Bash
-npm run dev
-Server:
+* Mobile-first design
+* Fully responsive layout
+* Optimized for mobile, tablet, and desktop
+* Modern luxury interface
+* Smooth animations and transitions
 
-Bash
-npm start
-👤 User Roles
-Traveler
-Discover unique, vetted properties.
+### ⚡ Performance & UX
 
-Experience luxury with 24/7 concierge support.
+* Fast page loading
+* Dynamic rendering
+* Optimized API communication
+* Image optimization
+* Smooth user experience
 
-Secure and verified booking process.
+---
 
-Host
-Monetize unique spaces to an exclusive audience.
+# 🛠️ Tech Stack
 
-Access detailed property management tools.
+## Frontend
 
-Monitor performance and revenue growth.
+* Next.js 16
+* React.js
+* TypeScript
+* Tailwind CSS
+* HeroUI
+* Framer Motion
+* React Hook Form
+* Axios
+* React Icons
+* React Toastify
+* Swiper
 
-📁 Project Structure
-Plaintext
-LuxeStay-client/
-├── app/          # Pages and API routes
-├── components/   # Reusable UI components
-├── hooks/        # Custom React hooks
-├── services/     # API service layer
-└── public/       # Assets and images
+## Backend
 
-LuxeStay-server/
-├── controllers/  # Request handling logic
-├── models/       # Mongoose schemas
-├── routes/       # API endpoints
-└── middleware/   # Auth and validation
-🚀 Future Improvements
-Real-time chat system for Guest-Host communication.
+* Node.js
+* Express.js
+* MongoDB Driver
+* REST API
 
-Integration with Stripe for secure payment processing.
+## Database
 
-AI-powered destination guides and itinerary suggestions.
+* MongoDB Atlas
 
-Virtual 360° tours for luxury properties.
+## Authentication & Security
 
-Integration with calendar synchronization services (iCal).
+* JWT Authentication
+* HTTP Only Cookies
+* Protected API Routes
+* Role-Based Access Control
 
-👨‍💻 Author
-[Your Name]
-Full Stack Developer
+## Image Management
 
-📧 Email: your.email@example.com
-🌐 Portfolio: https://your-portfolio.com
-🐙 GitHub: https://github.com/yourusername
+* ImgBB Image Hosting
 
-🤝 Contributing
-Contributions are welcome! If you have suggestions for improving the platform, please fork the repository and submit a pull request.
+## Deployment
 
-⭐ Support
-If you find this project valuable, please give it a ⭐ on GitHub.
+* Vercel (Frontend)
+* Render / VPS (Backend)
 
-Reimagining premium hospitality. Welcome to LuxeStay.
+---
+
+# 📦 Key NPM Packages
+
+## Frontend
+
+```bash
+next
+react
+react-dom
+typescript
+axios
+tailwindcss
+framer-motion
+react-hook-form
+react-icons
+react-toastify
+swiper
+@heroui/react
