@@ -1232,7 +1232,7 @@ export default function ManageStaysPage() {
                             <th className="py-4 px-6">Stay</th>
                             <th className="py-4 px-6">Author/Host</th>
                             <th className="py-4 px-6">Category</th>
-                            <th className="py-4 px-6">Likes</th>
+                            <th className="py-4 px-6">Rating</th>
                             <th className="py-4 px-6">Featured</th>
                             <th className="py-4 px-6 text-center">Actions</th>
                           </tr>
@@ -1262,11 +1262,11 @@ export default function ManageStaysPage() {
                                 </span>
                               </td>
 
-                              {/* Likes */}
+                              {/* Rating */}
                               <td className="py-4 px-6 text-gray-300 font-bold">
                                 <div className="flex items-center space-x-1.5">
-                                  <Heart className="w-3.5 h-3.5 fill-red-500 text-red-500" />
-                                  <span>{stay.reviews?.length || 3}</span>
+                                  <Star className="w-3.5 h-3.5 fill-gold text-gold" />
+                                  <span>{stay.rating ? stay.rating.toFixed(2) : '5.00'}</span>
                                 </div>
                               </td>
 
