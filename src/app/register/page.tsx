@@ -173,18 +173,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Role Field */}
-            <div className="space-y-1">
-              <label className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Role</label>
-              <select 
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1f2937] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all cursor-pointer"
-              >
-                <option value="user">User / Guest</option>
-                <option value="admin">Admin / Host</option>
-              </select>
-            </div>
+
 
             {/* Password Field */}
             <div className="space-y-1">

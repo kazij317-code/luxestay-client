@@ -1284,6 +1284,14 @@ export default function ManageStaysPage() {
                               {/* Actions */}
                               <td className="py-4 px-6">
                                 <div className="flex items-center justify-center space-x-2">
+                                  <Link
+                                    href={`/stays/${stay.id}`}
+                                    target="_blank"
+                                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 transition-all flex items-center space-x-1 cursor-pointer"
+                                  >
+                                    <Eye className="w-3.5 h-3.5" />
+                                    <span>View</span>
+                                  </Link>
                                   <button
                                     disabled={actionLoadingId === stay.id}
                                     onClick={() => handleToggleFeaturedStay(stay.id)}

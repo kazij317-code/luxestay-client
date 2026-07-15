@@ -89,6 +89,21 @@ export default function HomePage() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
+  // Hero Background Slider
+  const heroBackgrounds = [
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80",
+    "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1920&q=80",
+    "https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=1920&q=80"
+  ];
+  const [activeBgIndex, setActiveBgIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveBgIndex((prev) => (prev + 1) % heroBackgrounds.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     async function fetchStays() {
       try {
@@ -138,11 +153,14 @@ export default function HomePage() {
 
       {/* SECTION 1: HERO SECTION (60-70% height) */}
       <header className="relative w-full h-[65vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image Overlay */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80')" }}
-        />
+        {/* Background Image Overlay (Slider) */}
+        {heroBackgrounds.map((bg, idx) => (
+          <div 
+            key={bg}
+            className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out ${idx === activeBgIndex ? 'opacity-100' : 'opacity-0'}`}
+            style={{ backgroundImage: `url('${bg}')` }}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-dark/30 via-slate-dark/85 to-slate-dark" />
         
         {/* Hero Content */}
@@ -200,6 +218,15 @@ export default function HomePage() {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
+        </div>
+
+        {/* Visual Flow / Scroll Down Indicator */}
+        <div 
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-1 animate-bounce cursor-pointer group"
+          onClick={() => window.scrollTo({ top: window.innerHeight * 0.65, behavior: 'smooth' })}
+        >
+          <span className="text-[9px] font-bold text-white/50 group-hover:text-gold transition-colors tracking-widest uppercase">Explore Curated Stays</span>
+          <ChevronDown className="w-4 h-4 text-gold" />
         </div>
       </header>
 

@@ -47,29 +47,14 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoLogin = async (demoType: 'alex' | 'elena' | 'admin') => {
+  const handleDemoLogin = (demoType: 'nabhan' | 'admin') => {
     setError('');
-    setLoading(true);
-    let demoEmail = '';
-    let demoPass = 'demo1234';
-
-    if (demoType === 'alex') {
-      demoEmail = 'alex@luxestay.com';
-    } else if (demoType === 'elena') {
-      demoEmail = 'elena@luxestay.com';
+    if (demoType === 'nabhan') {
+      setEmail('nabhan@yahoo.com');
+      setPassword('Nabhan@123');
     } else {
-      demoEmail = 'admin@luxestay.com'; // In case there's a default admin
-    }
-
-    try {
-      const res = await login(demoEmail, demoPass);
-      if (!res.success) {
-        setError(res.error || 'Invalid demo credentials');
-      }
-    } catch (err) {
-      setError('Error with demo login.');
-    } finally {
-      setLoading(false);
+      setEmail('admin@admin.com');
+      setPassword('Admin@123');
     }
   };
 
@@ -186,17 +171,17 @@ export default function LoginPage() {
             <div className="flex gap-2 justify-center">
               <button
                 type="button"
-                onClick={() => handleDemoLogin('alex')}
+                onClick={() => handleDemoLogin('nabhan')}
                 className="py-1.5 px-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-all cursor-pointer"
               >
-                Host Alex
+                User: Nabhan
               </button>
               <button
                 type="button"
-                onClick={() => handleDemoLogin('elena')}
+                onClick={() => handleDemoLogin('admin')}
                 className="py-1.5 px-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-semibold text-gray-700 dark:text-gray-300 transition-all cursor-pointer"
               >
-                Host Elena
+                Admin: Admin
               </button>
             </div>
           </div>
