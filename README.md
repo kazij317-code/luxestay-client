@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🏨 LuxeStay – Bespoke Luxury Vacation Rental Platform
+LuxeStay is a premium, full-stack vacation rental platform designed for the discerning traveler. It offers a curated collection of architecturally unique cabins, beachfront villas, and luxury penthouses. The platform provides a seamless experience for both travelers—who receive 24/7 dedicated concierge service—and hosts, who can leverage the platform to maximize their property's revenue potential within an exclusive, high-net-worth traveler network.
 
-## Getting Started
+🌐 Live Demo
+🔗 https://luxestay-client-pi.vercel.app
 
-First, run the development server:
+📂 GitHub Repository
+(Note: Please update the placeholders below with your actual repository links.)
 
-```bash
+Client
+🔗 [https://github.com/yourusername/luxestay-client](https://github.com/yourusername/luxestay-client)
+
+Server
+🔗 [https://github.com/yourusername/luxestay-server](https://github.com/yourusername/luxestay-server)
+
+📸 Screenshot
+✨ Main Features
+🔐 Authentication & Security
+Secure user registration and login functionality.
+
+Role-based access control (Traveler, Host, Admin).
+
+Protected routes for sensitive account and booking management.
+
+Secure session handling.
+
+🏨 Property Exploration & Booking
+Curated Selections: Browse premium cabins, beachfront villas, and luxury penthouses.
+
+Advanced Filtering: Explore properties by category (Cabins, Beachfront, Penthouses).
+
+Detailed Listings: High-quality property descriptions and amenities overview.
+
+Concierge Support: Access to 24/7 dedicated private concierge services for guests.
+
+🏠 Host Dashboard
+Property Management: List, edit, and manage luxury properties.
+
+Revenue Analytics: Monitor monthly yield, bookings, and financial growth.
+
+Booking Requests: Manage inquiries from potential guests.
+
+💎 The LuxeStay Standard
+Vetted Listings: Every property undergoes rigorous physical inspection for architectural excellence and security.
+
+Trust & Safety: Verified host profiles, secure checkout, and emergency support.
+
+📱 Responsive User Experience
+Mobile-First Design: Fully responsive interface optimized for mobile, tablet, and desktop.
+
+Modern UI: Clean, elegant design tailored for high-end hospitality.
+
+🛠️ Tech Stack
+Frontend
+Next.js (App Router)
+
+React.js
+
+Tailwind CSS
+
+Framer Motion (for polished interactions)
+
+Axios (for data fetching)
+
+Backend
+Node.js
+
+Express.js
+
+Database
+MongoDB Atlas
+
+Deployment
+Vercel (Frontend)
+
+🚀 Setup Instructions
+1. Clone the Repositories
+Bash
+git clone https://github.com/yourusername/luxestay-client
+git clone https://github.com/yourusername/luxestay-server
+2. Install Dependencies
+Client:
+
+Bash
+cd luxestay-client
+npm install
+Server:
+
+Bash
+cd luxestay-server
+npm install
+3. Configure Environment Variables
+Create a .env.local file in the client directory and a .env file in the server directory. Ensure you include:
+
+NEXT_PUBLIC_API_URL
+
+MONGO_URI
+
+JWT_SECRET
+
+4. Run the Development Servers
+Client:
+
+Bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Server:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Bash
+npm start
+👤 User Roles
+Traveler
+Discover unique, vetted properties.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Experience luxury with 24/7 concierge support.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Secure and verified booking process.
 
-## Learn More
+Host
+Monetize unique spaces to an exclusive audience.
 
-To learn more about Next.js, take a look at the following resources:
+Access detailed property management tools.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Monitor performance and revenue growth.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+📁 Project Structure
+Plaintext
+LuxeStay-client/
+├── app/          # Pages and API routes
+├── components/   # Reusable UI components
+├── hooks/        # Custom React hooks
+├── services/     # API service layer
+└── public/       # Assets and images
 
-## Deploy on Vercel
+LuxeStay-server/
+├── controllers/  # Request handling logic
+├── models/       # Mongoose schemas
+├── routes/       # API endpoints
+└── middleware/   # Auth and validation
+🚀 Future Improvements
+Real-time chat system for Guest-Host communication.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Integration with Stripe for secure payment processing.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+AI-powered destination guides and itinerary suggestions.
+
+Virtual 360° tours for luxury properties.
+
+Integration with calendar synchronization services (iCal).
+
+👨‍💻 Author
+[Your Name]
+Full Stack Developer
+
+📧 Email: your.email@example.com
+🌐 Portfolio: https://your-portfolio.com
+🐙 GitHub: https://github.com/yourusername
+
+🤝 Contributing
+Contributions are welcome! If you have suggestions for improving the platform, please fork the repository and submit a pull request.
+
+⭐ Support
+If you find this project valuable, please give it a ⭐ on GitHub.
+
+Reimagining premium hospitality. Welcome to LuxeStay.
